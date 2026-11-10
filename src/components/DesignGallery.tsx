@@ -41,7 +41,7 @@ function LiveCard({ i, onPreview }: { i: number; onPreview: () => void }) {
         <div className="overflow-hidden rounded-t-xl bg-white">
           <div className="flex items-center justify-between gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[.1em] text-heading"><span className="truncate">{s.name}</span><span className="text-sm tracking-normal">•••</span></div>
           <div className="relative h-[290px] overflow-hidden border-t border-border bg-white sm:h-[300px]">
-            <img loading="lazy" decoding="async" src={asset(`live/${s.id}-thumb.jpg`)} alt="" className="h-auto w-full object-cover object-top" />
+            <img loading="lazy" decoding="async" src={asset(`live/${s.id}-thumb.jpg`)} alt="" className="h-full w-full object-cover object-top" />
           </div>
         </div>
       </div>
