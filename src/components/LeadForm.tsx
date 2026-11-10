@@ -91,7 +91,7 @@ export default function LeadForm() {
           <div className="relative"><select id="lf-pkg" className="field appearance-none pr-12" value={sel.pkg} onChange={e => setSel({ pkg: e.target.value })}>{packageOptions.map(o => <option key={o}>{o}</option>)}</select><Chev /></div>
         </Field>
       </div>
-      {sel.design && <p className="mt-3 rounded-lg bg-[#f0f7ff] px-3 py-2 text-sm text-heading">Design reference: <strong>{sel.design}</strong> <button type="button" className="ml-1 text-primary underline" onClick={() => setSel({ design: '' })}>remove</button></p>}
+      {sel.design && <p className="mt-3 rounded-lg bg-[#fff3ea] px-3 py-2 text-sm text-heading">Design reference: <strong>{sel.design}</strong> <button type="button" className="ml-1 text-primary underline" onClick={() => setSel({ design: '' })}>remove</button></p>}
       <div className="mt-4">
         <Field id="lf-description" label="Tell us about your business" error={errors.description}>
           <textarea id="lf-description" rows={3} className="field resize-y py-3" placeholder="What do you sell, and what would you like your website to do?" value={v.description} onChange={set('description')} {...ia('description')} />
@@ -99,8 +99,8 @@ export default function LeadForm() {
       </div>
       <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true"><label>Leave this empty<input tabIndex={-1} autoComplete="off" value={v.honey} onChange={set('honey')} /></label></div>
       <div className="mt-4 flex items-start gap-3">
-        <input id="lf-consent" type="checkbox" checked={v.consent} onChange={set('consent')} className="mt-1 h-5 w-5 shrink-0 accent-[#007afc]" {...ia('consent')} />
-        <label htmlFor="lf-consent" className="text-sm text-paragraph">I agree that Zevitech may contact me about this project by phone, WhatsApp or email. <a className="text-primary underline" href="https://www.zevitech.com/privacy-policy" target="_blank" rel="noreferrer">Privacy Policy</a></label>
+        <input id="lf-consent" type="checkbox" checked={v.consent} onChange={set('consent')} className="mt-1 h-5 w-5 shrink-0 accent-[#f06927]" {...ia('consent')} />
+        <label htmlFor="lf-consent" className="text-sm text-paragraph">I agree that Zcorebit may contact me about this project by phone, WhatsApp or email. <a className="text-primary underline" href="https://www.zcorebit.com/contact-us" target="_blank" rel="noreferrer">Privacy Policy</a></label>
       </div>
       {errors.consent && <p role="alert" className="mt-1 text-xs text-destructive">{errors.consent}</p>}
       {state === 'error' && <p role="alert" className="mt-4 flex gap-2 rounded-lg bg-red-50 p-3 text-sm text-destructive"><AlertCircle size={18} className="mt-0.5 shrink-0" />{msg}</p>}
@@ -111,4 +111,4 @@ export default function LeadForm() {
     </form>
   );
 }
-const Chev = () => <span className="pointer-events-none absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg bg-[#e8f1fb] text-primary"><ChevronDown size={16} /></span>;
+const Chev = () => <span className="pointer-events-none absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg bg-[#ffe6d6] text-primary"><ChevronDown size={16} /></span>;

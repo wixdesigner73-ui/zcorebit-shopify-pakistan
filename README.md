@@ -1,4 +1,4 @@
-# Zevitech – Shopify Development Pakistan landing page
+# Zcorebit – Shopify Development Pakistan landing page
 
 React + Vite + TypeScript + Tailwind recreation of the reference landing page.
 

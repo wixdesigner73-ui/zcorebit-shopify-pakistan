@@ -4,7 +4,7 @@
 export const config = {
   supabaseUrl: (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? '',
   supabaseAnonKey: (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) ?? '',
-  whatsappNumber: ((import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) ?? '').replace(/\D/g, ''),
+  whatsappNumber: ((import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) ?? '923006423452').replace(/\D/g, ''),
   base: import.meta.env.BASE_URL,
 };
 export const asset = (p: string) => `${config.base}${p.replace(/^\//, '')}`;

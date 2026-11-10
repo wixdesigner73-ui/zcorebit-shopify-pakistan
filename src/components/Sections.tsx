@@ -42,7 +42,7 @@ export function Testimonials() {
       <div className="mx-auto max-w-5xl text-center">
         <p className="eyebrow">Client experiences</p>
         <h2 id="reviews-title" className="h2 mt-3 !text-[2.75rem]">What our clients say.</h2>
-        <p className="mt-4 text-base text-paragraph">From first launches to store redesigns, hear about working with Zevitech.</p>
+        <p className="mt-4 text-base text-paragraph">From first launches to store redesigns, hear about working with Zcorebit.</p>
         <div className="mt-10 gap-5 text-left md:columns-2 [&>*]:mb-5">
           {list.map(r => (
             <figure key={r.name} className="break-inside-avoid rounded-2xl border border-border bg-white p-6">
@@ -53,7 +53,7 @@ export function Testimonials() {
         <p className="sr-only" aria-live="polite">Showing {list.length} of {reviews.length} reviews</p>
         <div className="mt-2 flex flex-wrap items-center justify-center gap-6">
           <button onClick={() => setAll(!all)} aria-expanded={all} className="btn btn-outline">{all ? 'Show fewer reviews' : `Show all ${reviews.length} reviews`}<ChevronDown size={16} className={all ? 'rotate-180' : ''} /></button>
-          <a href="https://www.trustpilot.com/review/zevitech.com" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-heading underline underline-offset-4">Read reviews on Trustpilot <ArrowUpRight size={15} /></a>
+          <a href="https://www.linkedin.com/company/zcorebit" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-heading underline underline-offset-4">Follow Zcorebit on LinkedIn <ArrowUpRight size={15} /></a>
         </div>
       </div>
     </section>
@@ -156,15 +156,15 @@ export function FAQ() {
 
 export function FinalCTA() {
   return (
-    <section className="bg-pattern bg-[#07090b] py-14">
+    <section className="bg-pattern bg-[#050505] py-14">
       <div className="mx-auto max-w-[1296px] px-4 sm:px-6 xl:px-0">
         <h2 className="max-w-3xl text-4xl font-semibold leading-tight text-white sm:text-5xl">Let’s plan your sales-focused store.</h2>
         <p className="mt-4 max-w-2xl text-lg text-white/80">Tell us what you have in mind. Your project manager will help with the next step.</p>
         <a href="#pakistan-enquiry" onClick={e => { e.preventDefault(); goForm(); }} className="btn btn-primary mt-7">Get my store plan <ArrowRight size={17} /></a>
         <footer className="mt-14 border-t border-white/15 pt-8 text-white/80">
-          <div className="flex flex-wrap items-center justify-between gap-4 text-sm"><p>© {new Date().getFullYear()} Zevitech. All rights reserved.</p>
-            <nav aria-label="Legal" className="flex flex-wrap gap-x-6 gap-y-2"><a className="hover:text-white" href="https://www.zevitech.com/privacy-policy">Privacy policy</a><a className="hover:text-white" href="https://www.zevitech.com/shopify-project-terms">Shopify project terms</a><a className="hover:text-white" href="https://www.zevitech.com/shopify-project-terms#refund">Refund policy</a></nav></div>
-          <p className="mt-5 max-w-4xl text-xs leading-5 text-white/60">Zevitech is an independent company that provides design and development services for e-commerce solutions. We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with Shopify Inc., or any of its subsidiaries or affiliates. The name "Shopify" as well as related names, marks, emblems, and images are registered trademarks of their respective owners.</p>
+          <div className="flex flex-wrap items-center justify-between gap-4 text-sm"><p>© {new Date().getFullYear()} Zcorebit. All rights reserved.</p>
+            <nav aria-label="Legal" className="flex flex-wrap gap-x-6 gap-y-2"><a className="hover:text-white" href="https://www.zcorebit.com/contact-us">Privacy policy</a><a className="hover:text-white" href="https://www.zcorebit.com/contact-us">Shopify project terms</a><a className="hover:text-white" href="https://www.zcorebit.com/contact-us">Refund policy</a></nav></div>
+          <p className="mt-5 max-w-4xl text-xs leading-5 text-white/60">Zcorebit is an independent company that provides design and development services for e-commerce solutions. We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with Shopify Inc., or any of its subsidiaries or affiliates. The name "Shopify" as well as related names, marks, emblems, and images are registered trademarks of their respective owners.</p>
         </footer>
       </div>
     </section>

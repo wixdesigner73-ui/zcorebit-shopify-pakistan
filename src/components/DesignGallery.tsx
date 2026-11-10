@@ -47,7 +47,7 @@ function DesignCard({ kind, cat, design, seed, onPreview }: { kind: Kind; cat: C
         <h3 id={id} className="mt-1 text-2xl font-normal text-heading">{design.title}</h3>
         <p className="mt-3 text-[15px] leading-[1.55] text-paragraph">{design.desc}</p>
         <p className="mb-5 mt-4 text-[15px] font-medium text-primary">Available with every package</p>
-        <button onClick={onPreview} className="mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white animation-standard hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Preview design <ArrowUpRight size={17} /></button>
+        <button onClick={onPreview} className="mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground animation-standard hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Preview design <ArrowUpRight size={17} /></button>
       </div>
     </article>
   );
@@ -77,8 +77,8 @@ export default function DesignGallery() {
           <legend className="mb-3 text-base font-medium text-heading">What does your business offer?</legend>
           <div className="grid gap-3 md:grid-cols-2">
             {([['product', 'Product business', 'Sell physical or digital products.'], ['service', 'Service business', 'Salons, spas, home services, consultants and more.']] as const).map(([k, t, d]) => (
-              <label key={k} className={`flex cursor-pointer flex-col gap-1.5 rounded-xl border-2 bg-white px-5 py-4 animation-standard ${kind === k ? 'border-primary bg-[#f0f7ff]' : 'border-border hover:border-primary/50'}`}>
-                <span className="flex items-center gap-3 text-base font-semibold text-heading"><input type="radio" name="offer" className="h-[18px] w-[18px] accent-[#007afc]" checked={kind === k} onChange={() => choose(k)} />{t}</span>
+              <label key={k} className={`flex cursor-pointer flex-col gap-1.5 rounded-xl border-2 bg-white px-5 py-4 animation-standard ${kind === k ? 'border-primary bg-[#fff3ea]' : 'border-border hover:border-primary/50'}`}>
+                <span className="flex items-center gap-3 text-base font-semibold text-heading"><input type="radio" name="offer" className="h-[18px] w-[18px] accent-[#f06927]" checked={kind === k} onChange={() => choose(k)} />{t}</span>
                 <span className="pl-[30px] text-[15px] text-paragraph">{d}</span>
               </label>))}
           </div>
@@ -87,7 +87,7 @@ export default function DesignGallery() {
         <div className="mt-6 max-w-[632px]">
           <label htmlFor="biz-cat" className="mb-2 block text-base font-medium text-heading">Business category</label>
           <div className="relative"><select id="biz-cat" value={cat.id} onChange={e => setCatId(e.target.value)} className="field min-h-[50px] appearance-none pr-12 text-base">{cats.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
-            <span className="pointer-events-none absolute right-2.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg bg-[#e8f1fb] text-primary"><ChevronDown size={16} /></span></div>
+            <span className="pointer-events-none absolute right-2.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg bg-[#ffe6d6] text-primary"><ChevronDown size={16} /></span></div>
           <p className="mt-2 text-sm text-paragraph">Choose the closest match to see relevant design references.</p>
         </div>
 

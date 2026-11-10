@@ -56,7 +56,7 @@ export function Shop({ store, theme, home, scrollEl, footer = true }: { store: P
   const results = q.trim() ? store.products.map((p, i) => ({ p, i })).filter(x => x.p.name.toLowerCase().includes(q.toLowerCase())) : [];
   return (
     <C.Provider value={ctx}>
-      <div style={{ ...themeVars(theme), background: 'var(--bg)', color: 'var(--fg)' }} className="@container relative min-h-full text-left font-sans">
+      <div style={{ ...themeVars(theme), background: 'var(--bg)', color: 'var(--fg)' }} className="@container store-root relative min-h-full text-left font-sans">
         <div className="bg-[var(--ac)] py-2 text-center text-[11px] font-bold uppercase tracking-[.18em] text-[var(--acfg)]">{store.exploreLabel}</div>
         <div className="flex items-center gap-3 border-b border-[var(--line)] px-4 py-3 @sm:gap-6 @sm:px-8">
           <button className="text-2xl tracking-tight @sm:text-[28px]" onClick={() => ctx.go('home')}>{store.brand}</button>

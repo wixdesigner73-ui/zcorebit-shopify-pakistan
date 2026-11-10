@@ -33,7 +33,7 @@ export default function PreviewModal({ kind, cat, design, seed, onClose, onUse }
           <p className="text-xs text-paragraph">Sample products, prices and store functions are for illustration.</p>
           <div className="flex gap-2">
             {([['desktop', Monitor, 'Desktop'], ['mobile', Smartphone, 'Mobile']] as const).map(([k, I, l]) => (
-              <button key={k} onClick={() => setMode(k)} aria-pressed={mode === k} className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-4 text-sm font-semibold ${mode === k ? 'border-primary bg-primary text-white' : 'border-border bg-white text-heading hover:bg-muted'}`}><I size={16} />{l}</button>))}
+              <button key={k} onClick={() => setMode(k)} aria-pressed={mode === k} className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-4 text-sm font-semibold ${mode === k ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-white text-heading hover:bg-muted'}`}><I size={16} />{l}</button>))}
           </div>
         </div>
         <div className={`min-h-0 flex-1 px-3 pb-3 sm:px-5 ${mode === "mobile" ? "bg-[#f4f4f5] pt-5" : "bg-[#e9e9ea]"}`}>

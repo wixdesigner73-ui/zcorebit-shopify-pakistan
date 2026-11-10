@@ -19,7 +19,7 @@ export async function saveEnquiry(e: Enquiry): Promise<void> {
 export function whatsappUrl(e: Enquiry): string | null {
   if (!config.whatsappNumber) return null;
   const text = [
-    "Hi Zevitech, I'd like a store plan.", `Name: ${e.full_name}`, `Business: ${e.business_name} (${e.offer})`,
+    "Hi Zcorebit, I'd like a store plan.", `Name: ${e.full_name}`, `Business: ${e.business_name} (${e.offer})`,
     `Package: ${e.package_interest}`, e.design_reference && `Design reference: ${e.design_reference}`, `Details: ${e.description}`,
   ].filter(Boolean).join('\n');
   return `https://wa.me/${config.whatsappNumber}?text=${encodeURIComponent(text)}`;

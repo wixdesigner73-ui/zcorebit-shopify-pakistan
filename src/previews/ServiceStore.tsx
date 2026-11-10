@@ -32,7 +32,7 @@ export function ServiceShop({ s, theme, variant, scrollEl }: { s: SStore; theme:
   const Home = { signature: Signature, discovery: Discovery, editorial: Editorial, spotlight: Spotlight, boutique: Boutique, campaign: Campaign, dimensional: Dimensional, parallax: Parallax, cinematic: Cinematic, studio: Studio }[variant];
   return (
     <C.Provider value={ctx}>
-      <div ref={root} style={{ ...themeVars(theme), background: 'var(--bg)', color: 'var(--fg)' }} className="@container relative min-h-full text-left font-sans">
+      <div ref={root} style={{ ...themeVars(theme), background: 'var(--bg)', color: 'var(--fg)' }} className="@container store-root relative min-h-full text-left font-sans">
         <div className="bg-[var(--ac)] py-2 text-center text-[11px] font-bold uppercase tracking-[.18em] text-[var(--acfg)]">Illustrative service example</div>
         <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-[var(--line)] bg-[var(--bg)] px-5 py-4 @sm:px-10">
           <p className="text-2xl tracking-tight">{s.brand}</p>
