@@ -22,14 +22,6 @@ export const reviews: Review[] = [
     en: 'Zcorebit helped us fix and optimize our Google My Business listing, and now more local customers are finding us easily. The calls and visits have definitely increased, and their support has been really helpful along the way.' },
 ];
 
-export const snapshots = [
-  { name: 'Jonathan Henry', topic: 'Store design and development', img: 'result-img-02.png' },
-  { name: 'Richard Buyers', topic: 'Product recommendations and offers', img: 'result-img-03.png' },
-  { name: 'Johnson Smith', topic: 'Search visibility', img: 'result-img-04.png' },
-  { name: 'Alice Baker', topic: 'Customer accounts and order tracking', img: 'result-img-05.png' },
-  { name: 'Rachel Lisa', topic: 'Store design and usability', img: 'result-img-06.png' },
-];
-
 export const faqs = [
   ['What happens after I submit the form?', 'We save your enquiry, then open WhatsApp so you can talk to your project manager. Tap Send in WhatsApp to start the conversation. Your details stay saved for follow-up even if you don’t send the message. Submitting the form does not place a paid order.'],
   ['Are these fixed package prices?', 'Yes. These are fixed PKR development packages for the listed scope. Shopify subscriptions, domain registration, paid themes, apps and third-party charges are separate. Any additional custom work is quoted before it starts.'],

@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { ArrowRight, ArrowUpRight, Check, ChevronDown, Clock } from 'lucide-react';
 import { asset } from '../lib/config';
-import { faqs, journey, packages, reviews, snapshots, steps } from '../data/content';
+import { faqs, journey, packages, reviews, steps } from '../data/content';
 import { reveal, scrollToId, setSel } from '../lib/store';
 
 const goForm = () => scrollToId('pakistan-enquiry');
@@ -65,56 +65,6 @@ export function Testimonials() {
           <a href="https://www.linkedin.com/company/zcorebit" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-heading underline underline-offset-4">Follow Zcorebit on LinkedIn <ArrowUpRight size={15} /></a>
         </div>
       </div>
-    </section>
-  );
-}
-
-export function VideoFeature() {
-  return (
-    <section className="section-padding-standard">
-      <div className="mx-auto grid max-w-[1296px] items-center gap-10 lg:grid-cols-2">
-        <div>
-          <p className="eyebrow">More than a good-looking store</p>
-          <h2 className="h2 mt-3 max-w-[620px]">Help your customers take the next step.</h2>
-          <p className="mt-5 max-w-[620px] text-base leading-7 text-paragraph">Clear product details, useful choices and a straightforward path to checkout. See the sales-focused approach behind your custom Shopify store.</p>
-          <a href="#pakistan-enquiry" onClick={e => { e.preventDefault(); goForm(); }} className="btn btn-primary mt-7">Plan my Shopify store <ArrowRight size={17} /></a>
-        </div>
-        <video controls playsInline preload="none" poster={asset('assets/intro-poster.jpg')} width={1080} height={1350} className="mx-auto aspect-[4/5] w-full max-w-sm rounded-2xl bg-black object-contain" aria-label="Zcorebit sales-focused Shopify store development"><source src={asset('assets/intro.mp4')} type="video/mp4" /></video>
-      </div>
-    </section>
-  );
-}
-
-export function PortfolioGallery() {
-  const [all, setAll] = useState(false); const [lb, setLb] = useState<number | null>(null);
-  const list = all ? snapshots : snapshots.slice(0, 3);
-  const close = () => setLb(null);
-  useEffect(() => {
-    if (lb === null) return;
-    const k = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') setLb(i => (i! + 1) % snapshots.length); if (e.key === 'ArrowLeft') setLb(i => (i! - 1 + snapshots.length) % snapshots.length); };
-    document.addEventListener('keydown', k); document.body.style.overflow = 'hidden';
-    return () => { document.removeEventListener('keydown', k); document.body.style.overflow = ''; };
-  }, [lb]);
-  return (
-    <section id="store-results" aria-labelledby="store-results-title" className="section-padding-standard scroll-mt-6 bg-secondary-background">
-      <div className="mx-auto max-w-[1296px]">
-        <div className="mb-8 max-w-3xl"><p className="eyebrow">Client feedback</p><h2 id="store-results-title" className="mt-3 text-3xl font-semibold leading-tight text-heading sm:text-5xl">Store snapshots. Customer stories.</h2><p className="mt-4 text-lg text-paragraph">Explore feedback and store snapshots from our portfolio.</p></div>
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map(s => { const i = snapshots.indexOf(s); return (
-            <li key={s.name}><button onClick={() => setLb(i)} className="group block w-full overflow-hidden rounded-2xl border border-border bg-white text-left animation-standard hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0" aria-label={`Open ${s.name}: ${s.topic}`}>
-              <div className="aspect-[607/856] w-full bg-white"><img src={asset(`assets/${s.img}`)} width={607} height={856} loading="lazy" alt={`${s.name}: ${s.topic}`} className="h-full w-full object-contain" /></div>
-            </button></li>); })}
-        </ul>
-        <p className="mt-6 text-sm text-paragraph">These individual examples are not a forecast or guarantee of your store’s results.</p>
-        {snapshots.length > 3 && <button onClick={() => setAll(!all)} aria-expanded={all} className="btn btn-outline mt-5">{all ? 'Show fewer screenshots' : `Show all ${snapshots.length} screenshots`}<ChevronDown size={16} className={all ? 'rotate-180' : ''} /></button>}
-      </div>
-      {lb !== null && (
-        <div role="dialog" aria-modal="true" aria-label={snapshots[lb].name} className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4" onClick={close}>
-          <button onClick={close} aria-label="Close" className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white"><X /></button>
-          <button onClick={e => { e.stopPropagation(); setLb((lb - 1 + snapshots.length) % snapshots.length); }} aria-label="Previous" className="absolute left-2 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white sm:left-6"><ChevronLeft /></button>
-          <img onClick={e => e.stopPropagation()} src={asset(`assets/${snapshots[lb].img}`)} alt={`${snapshots[lb].name}: ${snapshots[lb].topic}`} className="max-h-full max-w-full rounded-xl bg-white object-contain" />
-          <button onClick={e => { e.stopPropagation(); setLb((lb + 1) % snapshots.length); }} aria-label="Next" className="absolute right-2 flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white sm:right-6"><ChevronRight /></button>
-        </div>)}
     </section>
   );
 }
