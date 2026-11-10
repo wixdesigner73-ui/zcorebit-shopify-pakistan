@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { createContext, useContext, useMemo, useState, type CSSProperties, type ReactNode } from 'react';
 import { Heart, Search, ShoppingBag, User, Check, X, Minus, Plus } from 'lucide-react';
 import { asset } from '../lib/config';
@@ -55,22 +56,22 @@ export function Shop({ store, theme, home, scrollEl, footer = true }: { store: P
   const results = q.trim() ? store.products.map((p, i) => ({ p, i })).filter(x => x.p.name.toLowerCase().includes(q.toLowerCase())) : [];
   return (
     <C.Provider value={ctx}>
-      <div style={{ ...themeVars(theme), background: 'var(--bg)', color: 'var(--fg)' }} className="relative min-h-full text-left font-sans">
+      <div style={{ ...themeVars(theme), background: 'var(--bg)', color: 'var(--fg)' }} className="@container relative min-h-full text-left font-sans">
         <div className="bg-[var(--ac)] py-2 text-center text-[11px] font-bold uppercase tracking-[.18em] text-[var(--acfg)]">{store.exploreLabel}</div>
-        <div className="flex items-center gap-3 border-b border-[var(--line)] px-4 py-3 sm:gap-6 sm:px-8">
-          <button className="text-2xl tracking-tight sm:text-[28px]" onClick={() => ctx.go('home')}>{store.brand}</button>
-          <div className="relative hidden flex-1 sm:block">
+        <div className="flex items-center gap-3 border-b border-[var(--line)] px-4 py-3 @sm:gap-6 @sm:px-8">
+          <button className="text-2xl tracking-tight @sm:text-[28px]" onClick={() => ctx.go('home')}>{store.brand}</button>
+          <div className="relative hidden flex-1 @sm:block">
             <input value={q} onChange={e => setQ(e.target.value)} placeholder="What are you looking for?" aria-label="Search store" className="h-11 w-full rounded-md border border-[var(--line)] bg-[var(--soft)] px-4 pr-10 text-sm text-[var(--fg)] outline-none placeholder:opacity-60" />
             <Search size={16} className="absolute right-3 top-3.5 opacity-70" />
             {q && <div className="absolute left-0 right-0 top-12 z-30 rounded-md border border-[var(--line)] bg-[var(--bg)] p-2 shadow-xl">{results.length ? results.map(r => <button key={r.i} className="block w-full rounded px-3 py-2 text-left text-sm hover:bg-[var(--soft)]" onClick={() => { setQ(''); ctx.go('product', r.i); }}>{r.p.name} · {ctx.price(num(r.p.price))}</button>) : <p className="px-3 py-2 text-sm opacity-70">No matches</p>}</div>}
           </div>
-          <div className="ml-auto flex items-center gap-4 sm:ml-0">
+          <div className="ml-auto flex items-center gap-4 @sm:ml-0">
             <button aria-label="Account" onClick={() => ctx.go('account')}><User size={19} /></button>
             <button aria-label={`Saved products (${wish.size})`} onClick={() => ctx.go('shop')} className="relative"><Heart size={19} fill={wish.size ? 'currentColor' : 'none'} /></button>
             <button aria-label={`Bag (${count})`} onClick={() => ctx.go('bag')} className="flex items-center gap-1.5"><ShoppingBag size={19} /><span className="text-xs">{count}</span></button>
           </div>
         </div>
-        <nav className="flex items-center gap-1 overflow-x-auto border-b border-[var(--line)] px-2 sm:px-6" aria-label="Store">
+        <nav className="flex items-center gap-1 overflow-x-auto border-b border-[var(--line)] px-2 @sm:px-6" aria-label="Store">
           {tabs.map(([k, l]) => <button key={k} onClick={() => ctx.go(k)} className={`shrink-0 border-b-2 px-3 py-3.5 text-sm ${page === k ? 'border-[var(--ac)] font-medium text-[var(--ac)]' : 'border-transparent opacity-80 hover:opacity-100'}`}>{l}</button>)}
           <div className="ml-auto shrink-0 pr-2"><select aria-label="Currency" value={cur} onChange={e => setCur(e.target.value as Cur)} className="rounded-md border border-[var(--line)] bg-[var(--bg)] px-2 py-2 text-sm">{(Object.keys(CUR) as Cur[]).map(c => <option key={c}>{c}</option>)}</select></div>
         </nav>
@@ -83,7 +84,7 @@ export function Shop({ store, theme, home, scrollEl, footer = true }: { store: P
           {page === 'account' && <AccountPage />}
         </main>
         {footer && <StoreFooter />}
-        {toast && <div role="status" className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-full bg-black px-4 py-2 text-sm text-white shadow-lg">{toast}</div>}
+        {toast && createPortal(<div style={themeVars(theme)} className="pointer-events-none fixed inset-x-0 bottom-24 z-[60] flex justify-center"><div role="status" className="rounded-full bg-black px-4 py-2 text-sm text-white shadow-lg">{toast}</div></div>, document.body)}
       </div>
     </C.Provider>
   );
@@ -108,18 +109,18 @@ export function ProductCard({ i, quick = true, ratio = '3/4' }: { i: number; qui
     </div>
   );
 }
-export const Grid = ({ ids, cols = 'sm:grid-cols-3 lg:grid-cols-4' }: { ids: number[]; cols?: string }) => (
-  <div className={`grid grid-cols-2 gap-4 sm:gap-6 ${cols}`}>{ids.map(i => <ProductCard key={i} i={i} />)}</div>
+export const Grid = ({ ids, cols = '@sm:grid-cols-3 @lg:grid-cols-4' }: { ids: number[]; cols?: string }) => (
+  <div className={`grid grid-cols-2 gap-4 @sm:gap-6 ${cols}`}>{ids.map(i => <ProductCard key={i} i={i} />)}</div>
 );
 export const Section = ({ children, className = '', soft }: { children: ReactNode; className?: string; soft?: boolean }) => (
-  <section className={`px-5 py-12 sm:px-10 sm:py-16 ${soft ? 'bg-[var(--soft)]' : ''} ${className}`}>{children}</section>
+  <section className={`px-5 py-12 @sm:px-10 @sm:py-16 ${soft ? 'bg-[var(--soft)]' : ''} ${className}`}>{children}</section>
 );
 export const H = ({ children, sub }: { children: ReactNode; sub?: string }) => (
-  <div className="mb-8 max-w-2xl"><h2 className="text-3xl leading-tight sm:text-4xl">{children}</h2>{sub && <p className="mt-3 opacity-75">{sub}</p>}</div>
+  <div className="mb-8 max-w-2xl"><h2 className="text-3xl leading-tight @sm:text-4xl">{children}</h2>{sub && <p className="mt-3 opacity-75">{sub}</p>}</div>
 );
 
 export function Reassure() {
-  return <Section soft><div className="grid gap-6 sm:grid-cols-3">{[['Free delivery', 'On orders over $150'], ['30-day returns', 'Free and easy, no questions'], ['Secure checkout', 'Cards, Shop Pay and more']].map(([a, b]) => <div key={a}><Check size={18} className="mb-2 text-[var(--ac)]" /><p className="font-semibold">{a}</p><p className="text-sm opacity-70">{b}</p></div>)}</div></Section>;
+  return <Section soft><div className="grid gap-6 @sm:grid-cols-3">{[['Free delivery', 'On orders over $150'], ['30-day returns', 'Free and easy, no questions'], ['Secure checkout', 'Cards, Shop Pay and more']].map(([a, b]) => <div key={a}><Check size={18} className="mb-2 text-[var(--ac)]" /><p className="font-semibold">{a}</p><p className="text-sm opacity-70">{b}</p></div>)}</div></Section>;
 }
 export function Newsletter() {
   const [d, setD] = useState(false); const [e, setE] = useState('');
@@ -132,8 +133,8 @@ export function Newsletter() {
 function StoreFooter() {
   const { store, go } = useShop();
   return (
-    <footer className="border-t border-[var(--line)] px-5 py-10 sm:px-10"><div className="grid gap-8 sm:grid-cols-4">
-      <div className="sm:col-span-2"><p className="text-2xl">{store.brand}</p><p className="mt-2 max-w-xs text-sm opacity-70">{store.sub}</p></div>
+    <footer className="border-t border-[var(--line)] px-5 py-10 @sm:px-10"><div className="grid gap-8 @sm:grid-cols-4">
+      <div className="@sm:col-span-2"><p className="text-2xl">{store.brand}</p><p className="mt-2 max-w-xs text-sm opacity-70">{store.sub}</p></div>
       <div><p className="mb-2 text-sm font-semibold">Shop</p>{store.edits.map(e => <button key={e} onClick={() => go('shop')} className="block py-1 text-sm opacity-75 hover:opacity-100">{e}</button>)}</div>
       <div><p className="mb-2 text-sm font-semibold">Discover</p><button onClick={() => go('journal')} className="block py-1 text-sm opacity-75">Your shopping guide</button><button onClick={() => go('account')} className="block py-1 text-sm opacity-75">My account</button><button onClick={() => go('bag')} className="block py-1 text-sm opacity-75">Bag</button></div>
     </div><p className="mt-8 text-[11px] font-bold uppercase tracking-[.18em] opacity-50">Interactive design sample</p></footer>
@@ -162,7 +163,7 @@ function ProductPage() {
   const { store, prod, im, price, add, wish, toggleWish } = useShop();
   const p = store.products[prod]; const [size, setSize] = useState('M'); const [qty, setQty] = useState(1);
   return (
-    <Section><div className="grid gap-8 md:grid-cols-2">
+    <Section><div className="grid gap-8 @md:grid-cols-2">
       <img src={im(prod + 1, 1000)} alt={p.name} className="aspect-[4/5] w-full rounded-md object-cover" />
       <div><p className="text-[11px] font-bold uppercase tracking-[.2em] text-[var(--ac)]">{store.edits[prod % 3]}</p><h2 className="mt-2 text-4xl">{p.name}</h2><p className="mt-2 text-2xl">{price(num(p.price))}</p><p className="mt-4 max-w-md opacity-75">{store.sub}</p>
         <p className="mt-6 text-sm font-semibold">Option</p><div className="mt-2 flex gap-2">{['S', 'M', 'L', 'XL'].map(s => <button key={s} onClick={() => setSize(s)} aria-pressed={size === s} className={`h-11 w-11 rounded-md border text-sm ${size === s ? 'border-[var(--ac)] bg-[var(--ac)] text-[var(--acfg)]' : 'border-[var(--line)]'}`}>{s}</button>)}</div>
@@ -180,7 +181,7 @@ function BagPage() {
   return (
     <Section><H>Your bag</H>
       {!bag.length ? <div><p className="opacity-75">Your bag is empty.</p><Btn onClick={() => go('shop')} className="mt-4">Browse the collection</Btn></div> : (
-        <div className="grid gap-8 md:grid-cols-[1fr_320px]"><ul className="divide-y divide-[var(--line)]">{bag.map((b, k) => <li key={k} className="flex gap-4 py-4"><img src={im(b.i + 1, 200)} alt="" className="h-24 w-20 rounded object-cover" /><div className="flex-1"><p>{b.p.name}</p><p className="text-sm opacity-70">{b.size ? `Option ${b.size} · ` : ''}{price(num(b.p.price))}</p><div className="mt-2 flex items-center gap-2"><button aria-label="Less" onClick={() => setQty(k, b.qty - 1)} className="rounded border border-[var(--line)] p-1.5"><Minus size={12} /></button><span className="w-5 text-center text-sm">{b.qty}</span><button aria-label="More" onClick={() => setQty(k, b.qty + 1)} className="rounded border border-[var(--line)] p-1.5"><Plus size={12} /></button></div></div><button aria-label="Remove" onClick={() => remove(k)}><X size={16} /></button></li>)}</ul>
+        <div className="grid gap-8 @md:grid-cols-[1fr_320px]"><ul className="divide-y divide-[var(--line)]">{bag.map((b, k) => <li key={k} className="flex gap-4 py-4"><img src={im(b.i + 1, 200)} alt="" className="h-24 w-20 rounded object-cover" /><div className="flex-1"><p>{b.p.name}</p><p className="text-sm opacity-70">{b.size ? `Option ${b.size} · ` : ''}{price(num(b.p.price))}</p><div className="mt-2 flex items-center gap-2"><button aria-label="Less" onClick={() => setQty(k, b.qty - 1)} className="rounded border border-[var(--line)] p-1.5"><Minus size={12} /></button><span className="w-5 text-center text-sm">{b.qty}</span><button aria-label="More" onClick={() => setQty(k, b.qty + 1)} className="rounded border border-[var(--line)] p-1.5"><Plus size={12} /></button></div></div><button aria-label="Remove" onClick={() => remove(k)}><X size={16} /></button></li>)}</ul>
           <div className="h-fit rounded-md bg-[var(--soft)] p-5"><div className="flex justify-between"><span>Subtotal</span><strong>{price(total)}</strong></div><p className="mt-1 text-xs opacity-70">{store.brand} sample bag · shipping calculated at checkout</p><Btn onClick={() => setDone(true)} className="mt-4 w-full">Checkout</Btn></div></div>)}
     </Section>
   );
@@ -188,7 +189,7 @@ function BagPage() {
 function JournalPage() {
   const { store, im } = useShop();
   const posts = ['The details behind the everyday.', 'Your shopping guide', 'Discover your favourites'];
-  return <Section><H sub={store.sub}>Journal</H><div className="grid gap-6 sm:grid-cols-3">{posts.map((t, i) => <article key={t}><img loading="lazy" src={im(i + 2, 700)} alt="" className="aspect-[4/3] w-full rounded-md object-cover" /><p className="mt-3 text-[11px] font-bold uppercase tracking-[.2em] text-[var(--ac)]">{store.edits[i]}</p><h3 className="mt-1 text-xl">{t}</h3></article>)}</div></Section>;
+  return <Section><H sub={store.sub}>Journal</H><div className="grid gap-6 @sm:grid-cols-3">{posts.map((t, i) => <article key={t}><img loading="lazy" src={im(i + 2, 700)} alt="" className="aspect-[4/3] w-full rounded-md object-cover" /><p className="mt-3 text-[11px] font-bold uppercase tracking-[.2em] text-[var(--ac)]">{store.edits[i]}</p><h3 className="mt-1 text-xl">{t}</h3></article>)}</div></Section>;
 }
 function AccountPage() {
   const [mode, setMode] = useState<'in' | 'order'>('in'); const [ok, setOk] = useState(false); const [n, setN] = useState('');

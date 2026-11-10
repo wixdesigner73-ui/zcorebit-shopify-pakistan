@@ -1,8 +1,10 @@
 /** @type {import('tailwindcss').Config} */
+import cq from "@tailwindcss/container-queries";
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      containers: { sm: "640px", md: "768px", lg: "1024px" },
       colors: {
         background: 'var(--background)', 'secondary-background': 'var(--secondary-background)', foreground: 'var(--foreground)',
         heading: 'var(--heading)', paragraph: 'var(--paragraph)', card: 'var(--card)',
@@ -15,5 +17,5 @@ export default {
       borderRadius: { xl: '0.75rem', '2xl': '1rem' },
     },
   },
-  plugins: [],
+  plugins: [cq],
 };
