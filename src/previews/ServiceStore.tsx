@@ -11,7 +11,8 @@ export function serviceVariant(title: string): SVariant {
   return m.find(([k]) => t.includes(k))?.[1] ?? 'signature';
 }
 export const isDarkService = (v: SVariant) => v === 'cinematic';
-export const serviceTheme = (seed: number, v: SVariant): Theme => makeTheme(seed, isDarkService(v));
+const SERVICE_SERIF: SVariant[] = ['signature', 'editorial', 'boutique', 'parallax', 'cinematic'];
+export const serviceTheme = (seed: number, v: SVariant, tone = 0): Theme => makeTheme(seed, isDarkService(v), tone, SERVICE_SERIF.includes(v));
 
 const FAQ_Q = ['Can I ask about a service before deciding?', 'How is pricing decided?', 'What happens after I send a request?', 'Does a request reserve a time?'];
 type Ctx = { s: SStore; im: (i: number, w?: number) => string; enquire: (svc?: string) => void; scrollEl: React.RefObject<HTMLDivElement> | null };
@@ -24,10 +25,10 @@ const Sec = ({ id, children, soft, className = '' }: { id?: string; children: Re
 const Kick = ({ children }: { children: ReactNode }) => <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[var(--ac)]">{children}</p>;
 const Hd = ({ children, sub }: { children: ReactNode; sub?: string }) => <div className="mb-8 max-w-2xl"><h2 className="text-3xl leading-tight @sm:text-4xl">{children}</h2>{sub && <p className="mt-3 opacity-75">{sub}</p>}</div>;
 
-export function ServiceShop({ s, theme, variant, scrollEl }: { s: SStore; theme: Theme; variant: SVariant; scrollEl?: React.RefObject<HTMLDivElement> }) {
+export function ServiceShop({ s, theme, variant, scrollEl, idx = 0 }: { s: SStore; theme: Theme; variant: SVariant; scrollEl?: React.RefObject<HTMLDivElement>; idx?: number }) {
   const [form, setForm] = useState<{ svc: string } | null>(null);
   const root = useRef<HTMLDivElement>(null);
-  const ctx: Ctx = { s, im: (i, w = 900) => img(s.images[i % s.images.length], w), enquire: svc => setForm({ svc: svc ?? '' }), scrollEl: scrollEl ?? null };
+  const ctx: Ctx = { s, im: (i, w = 900) => img(s.images[(i + idx) % s.images.length], w), enquire: svc => setForm({ svc: svc ?? '' }), scrollEl: scrollEl ?? null };
   const jump = (k: number) => { const ids = ['svc-services', 'svc-process', 'svc-faq']; root.current?.querySelector('#' + ids[k])?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   const Home = { signature: Signature, discovery: Discovery, editorial: Editorial, spotlight: Spotlight, boutique: Boutique, campaign: Campaign, dimensional: Dimensional, parallax: Parallax, cinematic: Cinematic, studio: Studio }[variant];
   return (
@@ -35,7 +36,7 @@ export function ServiceShop({ s, theme, variant, scrollEl }: { s: SStore; theme:
       <div ref={root} style={{ ...themeVars(theme), background: 'var(--bg)', color: 'var(--fg)' }} className="@container store-root relative min-h-full text-left font-sans">
         <div className="bg-[var(--ac)] py-2 text-center text-[11px] font-bold uppercase tracking-[.18em] text-[var(--acfg)]">Illustrative service example</div>
         <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-[var(--line)] bg-[var(--bg)] px-5 py-4 @sm:px-10">
-          <p className="text-2xl tracking-tight">{s.brand}</p>
+          <p style={{ fontFamily: 'var(--hf)' }} className="text-2xl tracking-tight">{s.brand}</p>
           <nav className="ml-auto hidden gap-6 text-sm @sm:flex" aria-label="Service store">{s.nav.map((n, k) => <button key={n} onClick={() => jump(k)} className="opacity-80 hover:opacity-100">{n}</button>)}</nav>
           <Btn className="ml-auto @sm:ml-0" onClick={() => ctx.enquire()}>Enquire</Btn>
         </header>
@@ -79,8 +80,10 @@ function Faq() {
   const { s } = useS(); const [open, setOpen] = useState<number | null>(0);
   return <Sec id="svc-faq"><Hd>Useful answers</Hd><div className="mx-auto max-w-3xl divide-y divide-[var(--line)] border-y border-[var(--line)]">{s.answers.map((a, i) => <div key={i}><button onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i} className="flex w-full items-center justify-between py-4 text-left font-medium">{FAQ_Q[i] ?? `Question ${i + 1}`}<ChevronDown size={18} className={`transition ${open === i ? 'rotate-180' : ''}`} /></button>{open === i && <p className="pb-4 text-sm opacity-75">{a}</p>}</div>)}</div></Sec>;
 }
-function Hero({ dark, split }: { dark?: boolean; split?: boolean }) {
+function Hero({ dark, split, kind }: { dark?: boolean; split?: boolean; kind?: 'center' | 'tri' }) {
   const { s, im, enquire } = useS();
+  if (kind === 'center') return <Sec className="text-center"><Kick>{s.cat}</Kick><h1 className="mx-auto mt-3 max-w-3xl text-5xl leading-[.98] sm:text-7xl">{s.title}</h1><p className="mx-auto mt-4 max-w-xl opacity-75">{s.sub}</p><Btn className="mt-6" onClick={() => enquire()}>Explore your options</Btn><img src={im(0, 1600)} alt="" className="mt-10 h-[280px] w-full rounded-md object-cover" /></Sec>;
+  if (kind === 'tri') return <section className="relative grid h-[500px] grid-cols-3 gap-1 overflow-hidden">{[0, 1, 2].map(k => <img key={k} src={im(k, 900)} alt="" className="h-full w-full object-cover" />)}<div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/10 to-transparent p-6 text-white sm:p-12"><div><h1 className="max-w-2xl text-5xl leading-[.95] sm:text-7xl">{s.title}</h1><Btn className="mt-5" onClick={() => enquire()}>Explore your options</Btn></div></div></section>;
   if (split) return <Sec><div className="grid items-center gap-8 @md:grid-cols-2"><div><Kick>{s.cat}</Kick><h1 className="mt-3 text-5xl leading-none @sm:text-6xl">{s.title}</h1><p className="mt-4 opacity-75">{s.sub}</p><Btn className="mt-6" onClick={() => enquire()}>Tell us what you need</Btn></div><img src={im(0, 1100)} alt="" className="aspect-[4/3] w-full rounded-md object-cover" /></div></Sec>;
   return (
     <div className="relative flex min-h-[520px] items-end overflow-hidden"><img src={im(0, 1600)} alt="" className="absolute inset-0 h-full w-full object-cover" /><div className={`absolute inset-0 ${dark ? 'bg-black/60' : 'bg-gradient-to-r from-black/60 via-black/25 to-transparent'}`} />
@@ -93,12 +96,12 @@ const Signature = () => <><Hero /><Benefits /><Services /><Process /><Faq /></>;
 function Discovery() {
   const { s } = useS(); const [g, setG] = useState(s.groups[0]);
   const list = s.services.map((v, i) => ({ v, i })).filter(x => x.v.group === g || !s.groups.includes(g));
-  return <><Hero /><Sec id="svc-services"><Hd sub="Choose your starting point.">Find the right support</Hd><div className="mb-6 flex flex-wrap gap-2">{s.groups.map(x => <button key={x} onClick={() => setG(x)} aria-pressed={g === x} className={`rounded-full border px-5 py-2 text-sm ${g === x ? 'border-[var(--ac)] bg-[var(--ac)] text-[var(--acfg)]' : 'border-[var(--line)]'}`}>{x}</button>)}</div><div className="grid gap-5 @md:grid-cols-3">{(list.length ? list : s.services.map((v, i) => ({ v, i }))).map(x => <ServiceCard key={x.i} i={x.i} />)}</div></Sec><Process /><Faq /></>;
+  return <><Hero kind="center" /><Sec id="svc-services"><Hd sub="Choose your starting point.">Find the right support</Hd><div className="mb-6 flex flex-wrap gap-2">{s.groups.map(x => <button key={x} onClick={() => setG(x)} aria-pressed={g === x} className={`rounded-full border px-5 py-2 text-sm ${g === x ? 'border-[var(--ac)] bg-[var(--ac)] text-[var(--acfg)]' : 'border-[var(--line)]'}`}>{x}</button>)}</div><div className="grid gap-5 @md:grid-cols-3">{(list.length ? list : s.services.map((v, i) => ({ v, i }))).map(x => <ServiceCard key={x.i} i={x.i} />)}</div></Sec><Process /><Faq /></>;
 }
 const Editorial = () => { const { s } = useS(); return <><Sec className="text-center"><Kick>{s.cat}</Kick><h1 className="mx-auto mt-3 max-w-3xl text-5xl leading-none @sm:text-6xl">{s.title}</h1><p className="mx-auto mt-4 max-w-xl opacity-75">{s.sub}</p></Sec><Services /><Faq /></>; };
 function Spotlight() {
   const { s, im, enquire } = useS(); const [k, setK] = useState(0); const v = s.services[k];
-  return <><Hero /><Sec id="svc-services"><Hd>In focus</Hd><div className="grid items-center gap-8 @md:grid-cols-2"><img src={im(k + 1, 1000)} alt="" className="aspect-[4/3] w-full rounded-md object-cover" /><div><Kick>{v.group}</Kick><h3 className="mt-2 text-4xl">{v.name}</h3><p className="mt-3 opacity-75">{v.desc}</p><Btn className="mt-5" onClick={() => enquire(v.name)}>Enquire about this</Btn></div></div><div className="mt-8 grid gap-3 @sm:grid-cols-3">{s.services.map((x, i) => <button key={i} onClick={() => setK(i)} aria-pressed={k === i} className={`rounded-md border p-4 text-left ${k === i ? 'border-[var(--ac)] ring-1 ring-[var(--ac)]' : 'border-[var(--line)]'}`}><span className="text-xs opacity-60">{x.group}</span><br />{x.name}</button>)}</div></Sec><Process /></>;
+  return <><Hero kind="tri" /><Sec id="svc-services"><Hd>In focus</Hd><div className="grid items-center gap-8 @md:grid-cols-2"><img src={im(k + 1, 1000)} alt="" className="aspect-[4/3] w-full rounded-md object-cover" /><div><Kick>{v.group}</Kick><h3 className="mt-2 text-4xl">{v.name}</h3><p className="mt-3 opacity-75">{v.desc}</p><Btn className="mt-5" onClick={() => enquire(v.name)}>Enquire about this</Btn></div></div><div className="mt-8 grid gap-3 @sm:grid-cols-3">{s.services.map((x, i) => <button key={i} onClick={() => setK(i)} aria-pressed={k === i} className={`rounded-md border p-4 text-left ${k === i ? 'border-[var(--ac)] ring-1 ring-[var(--ac)]' : 'border-[var(--line)]'}`}><span className="text-xs opacity-60">{x.group}</span><br />{x.name}</button>)}</div></Sec><Process /></>;
 }
 function Boutique() {
   const { s } = useS(); const [g, setG] = useState('All');

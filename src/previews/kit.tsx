@@ -12,14 +12,18 @@ export const num = (s: string) => parseFloat(s.replace(/[$,]/g, '')) || 0;
 export const CUR = { USD: { r: 1, s: '$' }, EUR: { r: 0.92, s: '€' }, GBP: { r: 0.79, s: '£' } } as const;
 export type Cur = keyof typeof CUR;
 
-export type Theme = { bg: string; fg: string; soft: string; line: string; ac: string; acFg: string; dark: boolean };
+export type Theme = { bg: string; fg: string; soft: string; line: string; ac: string; acFg: string; dark: boolean; serif?: boolean };
 const ACC = ['#a8452f', '#1f4d3a', '#1d3557', '#7a4e2d', '#b3365f', '#2f6f6a', '#5b3a8a', '#c2410c', '#0f5c8c', '#6b705c', '#8a3b3b', '#2d5d7b'];
-export function makeTheme(seed: number, dark: boolean): Theme {
+const LIGHT = [['#fbf8f3', '#f1ebe2', '#1c1917'], ['#ffffff', '#f4f4f5', '#111111'], ['#f6f7f2', '#e9ece1', '#1b241d'], ['#fdf6f6', '#f6e6e6', '#2a1818'], ['#f3f6fa', '#e4ebf3', '#14202e'], ['#faf5ea', '#efe3c9', '#2b2112']];
+const DARK = [['#0d0d0f', '#18181b', '#f4efe8'], ['#0a1210', '#14201c', '#eef5f1'], ['#120d12', '#1e161e', '#f6eef6']];
+/** seed picks the accent, tone picks the background family, so every design in a category looks different. */
+export function makeTheme(seed: number, dark: boolean, tone = 0, serif = false): Theme {
   const ac = ACC[seed % ACC.length];
-  return dark ? { bg: '#0d0d0f', fg: '#f4efe8', soft: '#18181b', line: 'rgba(255,255,255,.14)', ac, acFg: '#fff', dark }
-    : { bg: '#fbf8f3', fg: '#1c1917', soft: '#f1ebe2', line: 'rgba(28,25,23,.14)', ac, acFg: '#fff', dark };
+  const set = dark ? DARK : LIGHT;
+  const [bg, soft, fg] = set[tone % set.length];
+  return { bg, fg, soft, line: dark ? 'rgba(255,255,255,.14)' : 'rgba(0,0,0,.13)', ac, acFg: '#fff', dark, serif };
 }
-export const themeVars = (t: Theme): CSSProperties => ({ ['--bg' as string]: t.bg, ['--fg' as string]: t.fg, ['--soft' as string]: t.soft, ['--line' as string]: t.line, ['--ac' as string]: t.ac, ['--acfg' as string]: t.acFg });
+export const themeVars = (t: Theme): CSSProperties => ({ ['--bg' as string]: t.bg, ['--fg' as string]: t.fg, ['--soft' as string]: t.soft, ['--line' as string]: t.line, ['--ac' as string]: t.ac, ['--acfg' as string]: t.acFg, ['--hf' as string]: t.serif ? "Georgia, 'Times New Roman', serif" : "'Inter Variable', Inter, system-ui, sans-serif" });
 
 export type Item = { p: PProduct; i: number; size?: string; qty: number };
 type Page = 'home' | 'shop' | 'product' | 'bag' | 'journal' | 'account';
@@ -33,7 +37,7 @@ const C = createContext<Ctx>(null as unknown as Ctx);
 export const useShop = () => useContext(C);
 
 /** Wraps a sample storefront: header, bag drawer, working pages. `home` supplies the variant-specific homepage. */
-export function Shop({ store, theme, home, scrollEl, footer = true }: { store: PStore; theme: Theme; home: ReactNode; scrollEl?: React.RefObject<HTMLDivElement>; footer?: boolean }) {
+export function Shop({ store, theme, home, scrollEl, footer = true, offset = 0 }: { store: PStore; theme: Theme; home: ReactNode; scrollEl?: React.RefObject<HTMLDivElement>; footer?: boolean; offset?: number }) {
   const [cur, setCur] = useState<Cur>('USD');
   const [bag, setBag] = useState<Item[]>([]);
   const [wish, setWish] = useState<Set<number>>(new Set());
@@ -48,7 +52,7 @@ export function Shop({ store, theme, home, scrollEl, footer = true }: { store: P
     remove: k => setBag(b => b.filter((_, j) => j !== k)), setQty: (k, qty) => setBag(b => qty < 1 ? b.filter((_, j) => j !== k) : b.map((x, j) => j === k ? { ...x, qty } : x)),
     wish, toggleWish: i => setWish(w => { const n = new Set(w); n.has(i) ? n.delete(i) : n.add(i); return n; }),
     page, go: (p, pr) => { setPage(p); if (pr !== undefined) setProd(pr); scrollEl?.current?.scrollTo({ top: 0 }); }, prod,
-    im: (i, w = 900) => img(store.images[i % store.images.length], w), toast, scrollEl: scrollEl ?? null,
+    im: (i, w = 900) => img(store.images[(i + offset) % store.images.length], w), toast, scrollEl: scrollEl ?? null,
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [store, cur, bag, wish, page, prod, toast]);
   const count = bag.reduce((a, b) => a + b.qty, 0);
@@ -59,7 +63,7 @@ export function Shop({ store, theme, home, scrollEl, footer = true }: { store: P
       <div style={{ ...themeVars(theme), background: 'var(--bg)', color: 'var(--fg)' }} className="@container store-root relative min-h-full text-left font-sans">
         <div className="bg-[var(--ac)] py-2 text-center text-[11px] font-bold uppercase tracking-[.18em] text-[var(--acfg)]">{store.exploreLabel}</div>
         <div className="flex items-center gap-3 border-b border-[var(--line)] px-4 py-3 @sm:gap-6 @sm:px-8">
-          <button className="text-2xl tracking-tight @sm:text-[28px]" onClick={() => ctx.go('home')}>{store.brand}</button>
+          <button style={{ fontFamily: 'var(--hf)' }} className="text-2xl tracking-tight @sm:text-[28px]" onClick={() => ctx.go('home')}>{store.brand}</button>
           <div className="relative hidden flex-1 @sm:block">
             <input value={q} onChange={e => setQ(e.target.value)} placeholder="What are you looking for?" aria-label="Search store" className="h-11 w-full rounded-md border border-[var(--line)] bg-[var(--soft)] px-4 pr-10 text-sm text-[var(--fg)] outline-none placeholder:opacity-60" />
             <Search size={16} className="absolute right-3 top-3.5 opacity-70" />

@@ -12,20 +12,28 @@ export const isDarkProduct = (v: PVariant) => v === 'cinematic' || v === 'concie
 
 const Kicker = ({ children }: { children: React.ReactNode }) => <p className="text-[11px] font-bold uppercase tracking-[.2em] text-[var(--ac)]">{children}</p>;
 
-function Hero({ full, dark }: { full?: boolean; dark?: boolean }) {
+type HeroKind = 'full' | 'split' | 'center' | 'tri';
+function Hero({ full, dark, kind = 'full' }: { full?: boolean; dark?: boolean; kind?: HeroKind }) {
   const { store, im, go } = useShop();
+  const cta = <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => go('shop')}>Browse the collection <ArrowRight size={16} /></Btn><Btn ghost onClick={() => go('journal')}>Read the journal</Btn></div>;
+  if (kind === 'split') return (
+    <section className={`grid items-center gap-8 px-5 py-12 @md:grid-cols-2 @md:px-10 ${dark ? 'bg-[var(--soft)]' : ''}`}>
+      <div><p className="text-[11px] font-bold uppercase tracking-[.2em] text-[var(--ac)]">{store.kicker}</p><h1 className="mt-3 text-5xl leading-[.98] tracking-tight @md:text-6xl">{store.title}</h1><p className="mt-4 max-w-md opacity-75">{store.sub}</p>{cta}</div>
+      <img src={im(0, 1200)} alt="" className="aspect-[4/5] w-full rounded-md object-cover" />
+    </section>);
+  if (kind === 'center') return (
+    <section className="px-5 py-14 text-center @md:px-10"><p className="text-[11px] font-bold uppercase tracking-[.2em] text-[var(--ac)]">{store.exploreLabel.replace('EXPLORE ', '')}</p><h1 className="mx-auto mt-3 max-w-3xl text-5xl leading-[.98] tracking-tight @md:text-7xl">{store.title}</h1><p className="mx-auto mt-4 max-w-xl opacity-75">{store.sub}</p>
+      <div className="mt-6 flex flex-wrap justify-center gap-2">{store.edits.map(e => <button key={e} onClick={() => go('shop')} className="rounded-full border border-[var(--line)] px-5 py-2 text-sm hover:bg-[var(--soft)]">{e}</button>)}</div>
+      <img src={im(0, 1600)} alt="" className="mt-10 h-[260px] w-full rounded-md object-cover @md:h-[340px]" /></section>);
+  if (kind === 'tri') return (
+    <section className="relative grid h-[540px] grid-cols-3 gap-1 overflow-hidden">{[0, 1, 2].map(k => <img key={k} src={im(k, 900)} alt="" className="h-full w-full object-cover" />)}
+      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/10 to-transparent p-6 text-white @md:p-12"><div><h1 className="max-w-2xl text-5xl leading-[.95] tracking-tight @md:text-7xl">{store.title}</h1>{cta}</div></div></section>);
   return (
     <div className={`relative flex items-end overflow-hidden ${full ? 'min-h-[620px]' : 'min-h-[460px]'}`}>
       <img src={im(0, 1600)} alt="" className="absolute inset-0 h-full w-full object-cover" />
       <div className={`absolute inset-0 ${dark ? 'bg-black/55' : 'bg-gradient-to-r from-black/55 via-black/20 to-transparent'}`} />
-      <div className="relative max-w-2xl px-6 pb-12 text-white @sm:px-14 @sm:pb-16">
-        <p className="text-sm">{store.kicker}</p>
-        <h1 className="mt-2 text-5xl leading-[0.95] tracking-tight @sm:text-7xl">{store.title}</h1>
-        <p className="mt-4 max-w-md text-lg text-white/90">{store.sub}</p>
-        <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => go('shop')}>Browse the collection <ArrowRight size={16} /></Btn><Btn ghost onClick={() => go('journal')}>Read the journal</Btn></div>
-      </div>
-    </div>
-  );
+      <div className="relative max-w-2xl px-6 pb-12 text-white @sm:px-14 @sm:pb-16"><p className="text-sm">{store.kicker}</p><h1 className="mt-2 text-5xl leading-[0.95] tracking-tight @sm:text-7xl">{store.title}</h1><p className="mt-4 max-w-md text-lg text-white/90">{store.sub}</p>{cta}</div>
+    </div>);
 }
 const ids = (n: number, len: number) => Array.from({ length: Math.min(n, len) }, (_, i) => i);
 
@@ -36,7 +44,7 @@ function Lookbook() {
   const total = look.reduce((a, i) => a + num(store.products[i].price), 0);
   const pos = [['22%', '30%'], ['55%', '52%'], ['70%', '24%']];
   return (<>
-    <Hero />
+    <Hero kind="split" />
     <Section><H sub="Three pieces, styled together. Tap a number on the photo to see each one.">This week’s look</H>
       <div className="grid items-center gap-8 @md:grid-cols-2">
         <div className="relative"><img src={im(1, 1100)} alt="Styled look" className="aspect-[4/5] w-full rounded-md object-cover" />
@@ -97,7 +105,7 @@ function Fashion() {
 function Discovery() {
   const { store, im, go } = useShop();
   return (<>
-    <Hero />
+    <Hero kind="center" />
     <Section><H sub={store.sub}>Discover {store.exploreLabel.replace('EXPLORE ', '').toLowerCase()}</H><Grid ids={ids(4, store.products.length)} /></Section>
     <Section soft><div className="grid items-center gap-8 @md:grid-cols-2"><img loading="lazy" src={im(2, 1000)} alt="" className="aspect-[4/3] w-full rounded-md object-cover" /><div><Kicker>In focus</Kicker><h2 className="mt-2 text-4xl">{store.products[1 % store.products.length].name}</h2><p className="mt-3 opacity-75">{store.sub}</p><Btn className="mt-5" onClick={() => go('product', 1)}>Explore every detail</Btn></div></div></Section>
     <Section><H>Featured collection</H><Grid ids={ids(8, store.products.length).slice(2)} /></Section><Reassure /><Newsletter />
@@ -110,7 +118,7 @@ function Concierge() {
   const done = ans.length === qs.length;
   const matched = useMemo(() => { if (!done) return []; const cap = ans[1] === 'Under $60' ? 60 : ans[1] === '$60–$120' ? 120 : 1e9; const k = store.edits.indexOf(ans[2]); const all = store.products.map((_, i) => i); const m = all.filter(i => num(store.products[i].price) <= cap && i % 3 === k); return (m.length ? m : all.filter(i => num(store.products[i].price) <= cap)).slice(0, 3).concat(all.slice(0, 1)).slice(0, 3); }, [done, ans, store]);
   return (<>
-    <Hero full dark />
+    <Hero kind="split" dark />
     <Section><H sub="Three quick questions and we’ll match pieces to you.">Your personal shopper</H>
       {!done ? <div className="max-w-lg"><p className="text-xs opacity-60">Question {ans.length + 1} of {qs.length}</p><h3 className="mt-1 text-2xl">{qs[ans.length][0]}</h3><div className="mt-4 flex flex-wrap gap-2">{qs[ans.length][1].map(o => <button key={o} onClick={() => setAns(a => [...a, o])} className="rounded-full border border-[var(--line)] px-5 py-3 text-sm hover:bg-[var(--ac)] hover:text-white">{o}</button>)}</div></div>
         : <div><p className="mb-4 flex items-center gap-2 text-[var(--ac)]"><Sparkles size={16} /> Matched for: {ans.join(' · ')} <button className="ml-3 text-sm underline" onClick={() => setAns([])}>Start again</button></p><div className="grid grid-cols-2 gap-4 @sm:grid-cols-3">{matched.map(i => <ProductCard key={i} i={i} />)}</div></div>}
@@ -136,7 +144,7 @@ function Editorial() {
 function Spotlight() {
   const { store, im, go } = useShop();
   return (<>
-    <Hero />
+    <Hero kind="tri" />
     <Section><H>Collection edits</H><div className="grid gap-4 @md:grid-cols-3">{store.edits.map((e, k) => <button key={e} onClick={() => go('shop')} className="group relative aspect-[3/4] overflow-hidden rounded-md text-left"><img loading="lazy" src={im(k + 1, 800)} alt="" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" /><span className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-xs font-semibold text-black">{e}</span></button>)}</div></Section>
     <Section soft><H sub="Tap Add to bag for a quick add.">Quick-add products</H><Grid ids={ids(8, store.products.length)} /></Section>
     <Section><div className="mx-auto max-w-2xl text-center"><Kicker>Brand story</Kicker><p className="mt-3 text-3xl leading-snug">{store.sub}</p></div></Section><Newsletter />
@@ -215,3 +223,12 @@ const MAP: Record<PVariant, () => JSX.Element> = { lookbook: Lookbook, bundle: B
 export function ProductHome({ variant }: { variant: PVariant }) { const V = MAP[variant]; return <V />; }
 // kept for tree-shaking friendliness of unused imports in some variants
 void useRef;
+
+/** Per-design look: image offset, tone and heading font so no two previews share an opening screen. */
+export const PRODUCT_LOOK: Record<PVariant, { offset: number; tone: number; serif: boolean }> = {
+  lookbook: { offset: 0, tone: 0, serif: false }, bundle: { offset: 1, tone: 5, serif: true }, configurator: { offset: 2, tone: 0, serif: false },
+  fashion: { offset: 0, tone: 1, serif: false }, discovery: { offset: 1, tone: 2, serif: false }, concierge: { offset: 2, tone: 2, serif: true },
+  editorial: { offset: 3, tone: 1, serif: true }, spotlight: { offset: 1, tone: 3, serif: false }, boutique: { offset: 2, tone: 4, serif: true },
+  campaign: { offset: 3, tone: 5, serif: false }, dimensional: { offset: 1, tone: 4, serif: false }, parallax: { offset: 2, tone: 0, serif: true },
+  cinematic: { offset: 3, tone: 1, serif: true }, commerce: { offset: 0, tone: 4, serif: false },
+};

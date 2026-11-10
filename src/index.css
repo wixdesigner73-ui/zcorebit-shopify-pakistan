@@ -27,4 +27,5 @@ body{font-family:'Manrope Variable',Manrope,ui-sans-serif,system-ui,sans-serif;c
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
 
 h1,h2,h3,.h2{font-family:'Space Grotesk Variable','Space Grotesk',system-ui,sans-serif}
-.store-root,.store-root h1,.store-root h2,.store-root h3,.store-root h4{font-family:'Inter Variable',Inter,system-ui,sans-serif}
+.store-root{font-family:'Inter Variable',Inter,system-ui,sans-serif}
+.store-root h1,.store-root h2,.store-root h3,.store-root h4{font-family:var(--hf,'Inter Variable')}
