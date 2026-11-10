@@ -36,8 +36,8 @@ export default function PreviewModal({ kind, cat, design, seed, onClose, onUse }
               <button key={k} onClick={() => setMode(k)} aria-pressed={mode === k} className={`inline-flex min-h-11 items-center gap-2 rounded-xl border px-4 text-sm font-semibold ${mode === k ? 'border-primary bg-primary text-white' : 'border-border bg-white text-heading hover:bg-muted'}`}><I size={16} />{l}</button>))}
           </div>
         </div>
-        <div className="min-h-0 flex-1 bg-[#e9e9ea] px-3 pb-3 sm:px-5">
-          <div ref={scroll} className={`mx-auto h-full overflow-y-auto overflow-x-hidden rounded-t-lg bg-white shadow-inner transition-[max-width] duration-300 ${mode === 'mobile' ? 'max-w-[390px]' : 'max-w-full'}`}>
+        <div className={`min-h-0 flex-1 px-3 pb-3 sm:px-5 ${mode === "mobile" ? "bg-[#f4f4f5] pt-5" : "bg-[#e9e9ea]"}`}>
+          <div ref={scroll} className={`mx-auto h-full overflow-y-auto overflow-x-hidden bg-white transition-[max-width] duration-300 ${mode === "mobile" ? "max-w-[430px] rounded-[28px] border border-border shadow-[0_10px_40px_rgba(0,0,0,.18)]" : "max-w-full rounded-t-lg shadow-inner"}`}>
             <Storefront kind={kind} cat={cat} design={design} seed={seed} scrollEl={scroll} />
           </div>
         </div>
