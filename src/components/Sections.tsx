@@ -69,6 +69,22 @@ export function Testimonials() {
   );
 }
 
+export function VideoFeature() {
+  return (
+    <section className="section-padding-standard">
+      <div className="mx-auto grid max-w-[1296px] items-center gap-10 lg:grid-cols-2">
+        <div>
+          <p className="eyebrow">More than a good-looking store</p>
+          <h2 className="h2 mt-3 max-w-[620px]">Help your customers take the next step.</h2>
+          <p className="mt-5 max-w-[620px] text-base leading-7 text-paragraph">Clear product details, useful choices and a straightforward path to checkout. See the sales-focused approach behind your custom Shopify store.</p>
+          <a href="#pakistan-enquiry" onClick={e => { e.preventDefault(); goForm(); }} className="btn btn-primary mt-7">Plan my Shopify store <ArrowRight size={17} /></a>
+        </div>
+        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1080&h=1350&q=85" srcSet="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=640&h=800&q=80 640w, https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1080&h=1350&q=85 1080w, https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1600&h=2000&q=85 1600w" sizes="(min-width: 1024px) 384px, 90vw" width={1080} height={1350} loading="lazy" decoding="async" alt="Customer paying with a smartphone at a store checkout" className="mx-auto aspect-[4/5] w-full max-w-sm rounded-2xl bg-secondary-background object-cover shadow-xl" />
+      </div>
+    </section>
+  );
+}
+
 export function Features() {
   return (
     <section className="section-padding-standard">

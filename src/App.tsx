@@ -2,7 +2,7 @@ import Header from './components/Header';
 import Hero from './components/Hero';
 import LogoStrip from './components/LogoStrip';
 import DesignGallery from './components/DesignGallery';
-import { FAQ, Features, FinalCTA, PricingPackages, Process, Testimonials } from './components/Sections';
+import { FAQ, Features, FinalCTA, PricingPackages, Process, Testimonials, VideoFeature } from './components/Sections';
 
 export default function App() {
   return (
@@ -15,6 +15,7 @@ export default function App() {
         <DesignGallery />
         <PricingPackages />
         <Testimonials />
+        <VideoFeature />
         <Features />
         <Process />
         <FAQ />
