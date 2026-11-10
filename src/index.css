@@ -1,0 +1,25 @@
+@import '@fontsource-variable/inter';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{--background:#fff;--secondary-background:#f9f9f9;--foreground:#1a1a1a;--heading:#2d2d2d;--paragraph:#585858;--card:#f5f5f5;--primary:#007afc;--primary-hover:#0063c7;--tertiary:#96bf48;--tertiary-hover:#7ea13c;--muted:#eee;--muted-foreground:#666;--border:#ddd;--input:#f0f0f0;--destructive:#e63946;--radius:.625rem}
+html{scroll-behavior:smooth}
+body{font-family:'Inter Variable',Inter,ui-sans-serif,system-ui,sans-serif;color:var(--foreground);background:#fff;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+.bg-pattern{background-image:url('/assets/pattern-img.webp');background-size:cover;background-position:center}
+.animation-standard{transition:all .2s ease}
+.section-padding-standard{padding:3rem 1rem}
+@media(min-width:768px){.section-padding-standard{padding:4rem 1.5rem}}
+@media(min-width:1024px){.section-padding-standard{padding:5rem 1.5rem}}
+.eyebrow{font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--primary)}
+.h2{font-size:clamp(1.75rem,3vw,2.25rem);line-height:1.1;font-weight:400;letter-spacing:-.02em;color:var(--heading)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;border-radius:.75rem;padding:.75rem 1.25rem;font-weight:600;font-size:.9375rem;transition:all .2s ease}
+.btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}
+.btn-outline{border:1px solid var(--primary);color:var(--primary);background:#fff}.btn-outline:hover{background:#f0f7ff}
+.field{width:100%;min-height:3rem;border:1px solid var(--border);border-radius:.625rem;background:#fff;padding:.5rem .75rem;font-size:1rem;color:var(--foreground)}
+.field:focus{outline:2px solid var(--primary);outline-offset:0;border-color:var(--primary)}
+.field[aria-invalid=true]{border-color:var(--destructive)}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
