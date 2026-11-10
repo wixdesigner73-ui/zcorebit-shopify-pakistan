@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject } from 'react';
 import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react';
 import data from '../data/catalog.json';
 import { scrollToId, setSel } from '../lib/store';
@@ -16,8 +16,36 @@ const liveCat: CatalogCat = { name: LIVE_CATEGORY_NAME, id: LIVE_CATEGORY_ID, st
 const all = { product: [liveCat, ...catalog.product], service: catalog.service };
 const labelOf = (cat: CatalogCat, kind: Kind) => (cat.name.startsWith('Other / custom') ? (kind === 'product' ? 'General store' : 'Other services') : cat.name);
 
-function LiveThumb({ kind, cat, design, seed }: { kind: Kind; cat: CatalogCat; design: Design; seed: number }) {
+const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** True while the card is hovered/focused, or (on touch screens, which have no hover) while it is mostly on screen. */
+function useCardActive(card: RefObject<HTMLElement>) {
+  const [hover, setHover] = useState(false);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const el = card.current; if (!el || !matchMedia('(hover: none)').matches) return;
+    const io = new IntersectionObserver(([x]) => setSeen(x.intersectionRatio > 0.7), { threshold: [0, 0.7, 1] });
+    io.observe(el); return () => io.disconnect();
+  }, [card]);
+  return { active: hover || seen, handlers: { onMouseEnter: () => setHover(true), onMouseLeave: () => setHover(false), onFocus: () => setHover(true), onBlur: () => setHover(false) } };
+}
+
+/** Slowly scrolls tall content up inside its frame while active, then eases back to the top. */
+function useTravel(active: boolean, box: RefObject<HTMLElement>, mover: RefObject<HTMLElement>, dep: unknown): CSSProperties {
+  const [dist, setDist] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    const child = mover.current?.firstElementChild as HTMLElement | null; const b = box.current; if (!child || !b) return;
+    setDist(Math.max(0, Math.min(child.getBoundingClientRect().height - b.clientHeight, 3200)));
+  }, [active, dep, box, mover]);
+  const run = active && !reducedMotion() && dist > 0;
+  const dur = Math.min(10, Math.max(3, dist / 140));
+  return { transform: `translateY(${run ? -dist : 0}px)`, transition: run ? `transform ${dur}s cubic-bezier(.45,.05,.55,.95)` : 'transform .8s ease-out', willChange: 'transform' };
+}
+
+function LiveThumb({ kind, cat, design, seed, active }: { kind: Kind; cat: CatalogCat; design: Design; seed: number; active: boolean }) {
   const box = useRef<HTMLDivElement>(null);
+  const mover = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.22);
   const [on, setOn] = useState(false);
   useEffect(() => {
@@ -26,22 +54,46 @@ function LiveThumb({ kind, cat, design, seed }: { kind: Kind; cat: CatalogCat; d
     const io = new IntersectionObserver(([x]) => { if (x.isIntersecting) { setOn(true); io.disconnect(); } }, { rootMargin: '300px' }); io.observe(el);
     return () => { ro.disconnect(); io.disconnect(); };
   }, []);
+  const travel = useTravel(active, box, mover, scale);
   return (
     <div ref={box} className="relative h-full w-full overflow-hidden bg-white" aria-hidden="true">
-      {on && <div style={{ width: 1200, transform: `scale(${scale})`, transformOrigin: 'top left', pointerEvents: 'none' }} {...({ inert: '' } as object)}><Storefront kind={kind} cat={cat} design={design} seed={seed} /></div>}
+      <div ref={mover} style={travel}>
+        {on && <div style={{ width: 1200, transform: `scale(${scale})`, transformOrigin: 'top left', pointerEvents: 'none', height: 'max-content' }} {...({ inert: '' } as object)}><Storefront kind={kind} cat={cat} design={design} seed={seed} /></div>}
+      </div>
+    </div>
+  );
+}
+
+/** Live-store snapshot: shows a light crop, then swaps to the full-page image and scrolls through it while active. */
+function LiveShot({ id, active }: { id: string; active: boolean }) {
+  const box = useRef<HTMLDivElement>(null);
+  const mover = useRef<HTMLDivElement>(null);
+  const [full, setFull] = useState(false);
+  useEffect(() => {
+    if (!active || full) return;
+    const im = new Image(); im.onload = () => setFull(true); im.src = asset(`live/${id}-scroll.jpg`);
+  }, [active, full, id]);
+  const travel = useTravel(active && full, box, mover, full);
+  return (
+    <div ref={box} className="relative h-full w-full overflow-hidden bg-white">
+      <div ref={mover} style={travel}>
+        <img loading="lazy" decoding="async" src={asset(full ? `live/${id}-scroll.jpg` : `live/${id}-thumb.jpg`)} alt="" className={full ? 'block h-auto w-full' : 'block h-[290px] w-full object-cover object-top sm:h-[300px]'} />
+      </div>
     </div>
   );
 }
 
 function LiveCard({ i, onPreview }: { i: number; onPreview: () => void }) {
+  const card = useRef<HTMLElement>(null);
+  const { active, handlers } = useCardActive(card);
   const s = liveSites[i]; const id = `lc-${s.id}`;
   return (
-    <article aria-labelledby={id} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card animation-standard hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0">
+    <article ref={card} {...handlers} aria-labelledby={id} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card animation-standard hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0">
       <div className="bg-[#ececec] p-[18px] pb-0">
         <div className="overflow-hidden rounded-t-xl bg-white">
           <div className="flex items-center justify-between gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[.1em] text-heading"><span className="truncate">{s.name}</span><span className="text-sm tracking-normal">•••</span></div>
           <div className="relative h-[290px] overflow-hidden border-t border-border bg-white sm:h-[300px]">
-            <img loading="lazy" decoding="async" src={asset(`live/${s.id}-thumb.jpg`)} alt="" className="h-full w-full object-cover object-top" />
+            <LiveShot id={s.id} active={active} />
           </div>
         </div>
       </div>
@@ -57,14 +109,16 @@ function LiveCard({ i, onPreview }: { i: number; onPreview: () => void }) {
 }
 
 function DesignCard({ kind, cat, design, seed, onPreview }: { kind: Kind; cat: CatalogCat; design: Design; seed: number; onPreview: () => void }) {
+  const card = useRef<HTMLElement>(null);
+  const { active, handlers } = useCardActive(card);
   const id = `dc-${cat.id}-${design.title.replace(/\W+/g, '-')}`;
   return (
-    <article aria-labelledby={id} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card animation-standard hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0">
+    <article ref={card} {...handlers} aria-labelledby={id} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card animation-standard hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0">
       <div className="bg-[#ececec] p-[18px] pb-0">
         <div className="overflow-hidden rounded-t-xl bg-white">
           <div className="flex items-center justify-between gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[.1em] text-heading"><span className="truncate">{design.title}</span><span className="text-sm tracking-normal">•••</span></div>
           <div className="relative h-[290px] border-t border-border sm:h-[300px]">
-            <LiveThumb kind={kind} cat={cat} design={design} seed={seed} />
+            <LiveThumb kind={kind} cat={cat} design={design} seed={seed} active={active} />
           </div>
         </div>
       </div>
