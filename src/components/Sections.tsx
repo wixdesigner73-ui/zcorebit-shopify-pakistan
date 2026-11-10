@@ -28,7 +28,7 @@ export function PricingPackages() {
             </article>))}
         </div>
         <p className="mt-8 text-base font-semibold text-heading">70% upfront · 30% after delivery. Payment starts after your project is agreed.</p>
-        <p className="mt-2 max-w-4xl text-sm leading-6 text-paragraph">Shopify subscriptions, domain registration, paid themes, apps and third-party fees are separate. Delivery starts after we receive your brief and required assets. Custom service workflows are scoped with your project manager.</p>
+        <p className="mt-2 max-w-4xl text-sm leading-6 text-paragraph">Delivery starts after we receive your brief and required assets. Custom service workflows are scoped with your project manager.</p>
       </div>
     </section>
   );

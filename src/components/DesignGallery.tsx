@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, ArrowUpRight, ChevronDown } from 'lucide-react';
 import data from '../data/catalog.json';
-import { asset } from '../lib/config';
 import { scrollToId, setSel } from '../lib/store';
 import { Storefront, type CatalogCat, type Kind } from '../previews/Storefront';
 import type { Design } from '../previews/kit';
 import PreviewModal from './PreviewModal';
+import LivePreviewModal from './LivePreviewModal';
+import { asset } from '../lib/config';
+import { LIVE_CATEGORY_ID, LIVE_CATEGORY_NAME, liveSites } from '../data/live';
 
 const catalog = data as unknown as { product: CatalogCat[]; service: CatalogCat[] };
-// Original-site thumbnails exist for these Clothing & fashion designs; every other card renders a live scaled storefront.
-const THUMBS: [string, string][] = [['Bundle Builder', 'atelier-bundle-signature-thumb'], ['Configurator', 'atelier-configurator-signature-thumb'], ['Concierge', 'atelier-concierge-signature-thumb'], ['Campaign', 'atelier-campaign-thumb'], ['Dimensional', 'atelier-dimensional-thumb'], ['Parallax', 'atelier-parallax-thumb'], ['Cinematic', 'atelier-cinematic-thumb'], ['Commerce Studio', 'atelier-commerce-studio-thumb']];
-const thumbFor = (cat: CatalogCat, d: Design) => cat.id === 'clothing-and-fashion' ? THUMBS.find(([k]) => d.title.includes(k))?.[1] : undefined;
+// "Live client stores" is a real-site category, listed first under Product business.
+const liveCat: CatalogCat = { name: LIVE_CATEGORY_NAME, id: LIVE_CATEGORY_ID, store: {} as CatalogCat['store'],
+  designs: liveSites.map(s => ({ brandLabel: s.name.toUpperCase(), kind: s.kind, title: s.name, desc: s.desc })) };
+const all = { product: [liveCat, ...catalog.product], service: catalog.service };
 const labelOf = (cat: CatalogCat, kind: Kind) => (cat.name.startsWith('Other / custom') ? (kind === 'product' ? 'General store' : 'Other services') : cat.name);
 
 function LiveThumb({ kind, cat, design, seed }: { kind: Kind; cat: CatalogCat; design: Design; seed: number }) {
@@ -30,15 +33,38 @@ function LiveThumb({ kind, cat, design, seed }: { kind: Kind; cat: CatalogCat; d
   );
 }
 
+function LiveCard({ i, onPreview }: { i: number; onPreview: () => void }) {
+  const s = liveSites[i]; const id = `lc-${s.id}`;
+  return (
+    <article aria-labelledby={id} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card animation-standard hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0">
+      <div className="bg-[#ececec] p-[18px] pb-0">
+        <div className="overflow-hidden rounded-t-xl bg-white">
+          <div className="flex items-center justify-between gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[.1em] text-heading"><span className="truncate">{s.name}</span><span className="text-sm tracking-normal">•••</span></div>
+          <div className="relative h-[290px] overflow-hidden border-t border-border bg-white sm:h-[300px]">
+            <img loading="lazy" decoding="async" src={asset(`live/${s.id}-thumb.jpg`)} alt="" className="h-auto w-full object-cover object-top" />
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col bg-white p-[22px]">
+        <p className="text-sm font-semibold text-primary">{s.kind}</p>
+        <h3 id={id} className="mt-1 text-2xl font-normal text-heading">{s.name}</h3>
+        <p className="mt-3 text-[15px] leading-[1.55] text-paragraph">{s.desc}</p>
+        <p className="mb-5 mt-4 text-[15px] font-medium text-primary">Live store · {s.domain}</p>
+        <button onClick={onPreview} className="mt-auto inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground animation-standard hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Preview design <ArrowUpRight size={17} /></button>
+      </div>
+    </article>
+  );
+}
+
 function DesignCard({ kind, cat, design, seed, onPreview }: { kind: Kind; cat: CatalogCat; design: Design; seed: number; onPreview: () => void }) {
-  const th = thumbFor(cat, design); const id = `dc-${cat.id}-${design.title.replace(/\W+/g, '-')}`;
+  const id = `dc-${cat.id}-${design.title.replace(/\W+/g, '-')}`;
   return (
     <article aria-labelledby={id} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card animation-standard hover:-translate-y-1 hover:shadow-xl motion-reduce:hover:translate-y-0">
       <div className="bg-[#ececec] p-[18px] pb-0">
         <div className="overflow-hidden rounded-t-xl bg-white">
           <div className="flex items-center justify-between gap-2 px-4 py-3 text-[11px] font-bold uppercase tracking-[.1em] text-heading"><span className="truncate">{design.title}</span><span className="text-sm tracking-normal">•••</span></div>
           <div className="relative h-[290px] border-t border-border sm:h-[300px]">
-            {th ? <img loading="lazy" src={asset(`assets/${th}.webp`)} alt="" className="h-full w-full object-cover object-top" /> : <LiveThumb kind={kind} cat={cat} design={design} seed={seed} />}
+            <LiveThumb kind={kind} cat={cat} design={design} seed={seed} />
           </div>
         </div>
       </div>
@@ -55,12 +81,13 @@ function DesignCard({ kind, cat, design, seed, onPreview }: { kind: Kind; cat: C
 
 export default function DesignGallery() {
   const [kind, setKind] = useState<Kind>('product');
-  const [catId, setCatId] = useState(catalog.product[0].id);
+  const [catId, setCatId] = useState(all.product[0].id);
   const [open, setOpen] = useState<number | null>(null);
-  const cats = catalog[kind];
+  const cats = all[kind];
   const cat = cats.find(c => c.id === catId) ?? cats[0];
-  const seed = cats.indexOf(cat);
-  const choose = (k: Kind) => { setKind(k); setCatId(catalog[k][0].id); setSel({ offer: k === 'product' ? 'Products' : 'Services' }); };
+  const isLive = cat.id === LIVE_CATEGORY_ID;
+  const seed = Math.max(0, catalog[kind].indexOf(cat));
+  const choose = (k: Kind) => { setKind(k); setCatId(all[k][0].id); setSel({ offer: k === 'product' ? 'Products' : 'Services' }); };
   const design = open !== null ? cat.designs[open] : null;
   const closeRef = useMemo(() => () => setOpen(null), []);
 
@@ -93,12 +120,13 @@ export default function DesignGallery() {
 
         <h3 className="mt-10 text-[1.9rem] font-normal leading-tight text-heading">Choose a design as your reference</h3>
         <p className="mt-3 max-w-[1280px] text-base leading-7 text-paragraph">Pick the design closest to what you have in mind. This helps us understand your preferred style. It’s a starting reference, not your final store—we’ll tailor the design and functionality to your brand and selected package.</p>
-        <p className="mt-4 text-base font-semibold text-primary" aria-live="polite">{labelOf(cat, kind)} · {cat.designs.length} designs · All packages</p>
+        <p className="mt-4 text-base font-semibold text-primary" aria-live="polite">{isLive ? `${cat.designs.length} live stores we have built` : `${labelOf(cat, kind)} · ${cat.designs.length} designs · All packages`}</p>
         <p className="mt-5 text-sm text-paragraph">We build your store with your own brand, products and photos.</p>
         <p className="mt-1 text-sm text-paragraph">Your package determines the included features, setup limits and customization.</p>
 
         <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {cat.designs.map((d, i) => <DesignCard key={`${cat.id}-${d.title}`} kind={kind} cat={cat} design={d} seed={seed} onPreview={() => setOpen(i)} />)}
+          {isLive ? liveSites.map((s, i) => <LiveCard key={s.id} i={i} onPreview={() => setOpen(i)} />)
+            : cat.designs.map((d, i) => <DesignCard key={`${cat.id}-${d.title}`} kind={kind} cat={cat} design={d} seed={seed} onPreview={() => setOpen(i)} />)}
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-secondary-background p-6">
@@ -106,7 +134,9 @@ export default function DesignGallery() {
           <a href="#pakistan-packages" onClick={e => { e.preventDefault(); scrollToId('pakistan-packages'); }} className="btn btn-primary">Compare packages <ArrowRight size={16} /></a>
         </div>
       </div>
-      {design && <PreviewModal kind={kind} cat={cat} design={design} seed={seed} onClose={closeRef}
+      {isLive && open !== null && <LivePreviewModal site={liveSites[open]} onClose={closeRef}
+        onUse={() => { setSel({ design: `${liveSites[open].name} (live store)`, offer: 'Products' }); setOpen(null); setTimeout(() => scrollToId('pakistan-enquiry'), 50); }} />}
+      {!isLive && design && <PreviewModal kind={kind} cat={cat} design={design} seed={seed} onClose={closeRef}
         onUse={() => { setSel({ design: `${design.title} (${cat.name})`, offer: kind === 'product' ? 'Products' : 'Services' }); setOpen(null); setTimeout(() => scrollToId('pakistan-enquiry'), 50); }} />}
     </section>
   );

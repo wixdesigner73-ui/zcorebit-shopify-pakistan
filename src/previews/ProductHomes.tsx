@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, Gift, Sparkles, Truck, Check } from 'lucide-react';
 import { Btn, Grid, H, Newsletter, ProductCard, Reassure, Section, ShopPage, num, useShop } from './kit';
 
-export type PVariant = 'lookbook' | 'bundle' | 'configurator' | 'fashion' | 'discovery' | 'concierge' | 'editorial' | 'spotlight' | 'boutique' | 'campaign' | 'dimensional' | 'parallax' | 'cinematic' | 'commerce';
+export type PVariant = 'lookbook' | 'bundle' | 'configurator' | 'fashion' | 'discovery' | 'concierge' | 'editorial' | 'spotlight' | 'boutique' | 'campaign' | 'dimensional' | 'parallax' | 'cinematic' | 'commerce' | 'magazine';
 export function productVariant(title: string): PVariant {
   const t = title.toLowerCase();
-  const m: [string, PVariant][] = [['lookbook', 'lookbook'], ['bundle', 'bundle'], ['configurator', 'configurator'], ['signature', 'discovery'], ['concierge', 'concierge'], ['editorial', 'editorial'], ['spotlight', 'spotlight'], ['boutique', 'boutique'], ['campaign', 'campaign'], ['dimensional', 'dimensional'], ['parallax', 'parallax'], ['cinematic', 'cinematic'], ['commerce', 'commerce']];
+  const m: [string, PVariant][] = [['lookbook', 'lookbook'], ['bundle', 'bundle'], ['configurator', 'configurator'], ['signature editorial', 'magazine'], ['signature', 'discovery'], ['concierge', 'concierge'], ['editorial', 'editorial'], ['spotlight', 'spotlight'], ['boutique', 'boutique'], ['campaign', 'campaign'], ['dimensional', 'dimensional'], ['parallax', 'parallax'], ['cinematic', 'cinematic'], ['commerce', 'commerce']];
   return m.find(([k]) => t.includes(k))?.[1] ?? 'fashion';
 }
 export const isDarkProduct = (v: PVariant) => v === 'cinematic' || v === 'concierge' || v === 'configurator';
@@ -219,7 +219,21 @@ function Commerce() {
   </>);
 }
 
-const MAP: Record<PVariant, () => JSX.Element> = { lookbook: Lookbook, bundle: Bundle, configurator: Configurator, fashion: Fashion, discovery: Discovery, concierge: Concierge, editorial: Editorial, spotlight: Spotlight, boutique: Boutique, campaign: Campaign, dimensional: Dimensional, parallax: Parallax, cinematic: Cinematic, commerce: Commerce };
+
+function Magazine() {
+  const { store, im, go } = useShop();
+  const posts = ['The details behind the everyday.', 'Your shopping guide', 'Discover your favourites'];
+  return (<>
+    <section className="grid items-stretch @md:grid-cols-[1.1fr_1fr]">
+      <img src={im(0, 1400)} alt="" className="h-[420px] w-full object-cover @md:h-full @md:min-h-[520px]" />
+      <div className="flex flex-col justify-center gap-4 p-8 @md:p-14"><Kicker>The signature edit</Kicker><h1 className="text-5xl leading-[.95] tracking-tight @md:text-6xl">{store.title}</h1><p className="max-w-md opacity-75">{store.sub}</p><div><Btn onClick={() => go('shop')}>Shop the edit <ArrowRight size={16} /></Btn></div></div>
+    </section>
+    <Section><H>From the journal</H><div className="grid gap-6 @md:grid-cols-3">{posts.map((t, i) => <button key={t} onClick={() => go('journal')} className="text-left"><img loading="lazy" src={im(i + 1, 700)} alt="" className="aspect-[4/3] w-full rounded-md object-cover" /><p className="mt-3 text-[11px] font-bold uppercase tracking-[.2em] text-[var(--ac)]">{store.edits[i]}</p><h3 className="mt-1 text-xl">{t}</h3></button>)}</div></Section>
+    <Section soft><H sub="Pick a piece and add it straight to your bag.">Selected pieces</H><Grid ids={ids(8, store.products.length)} /></Section><Reassure /><Newsletter />
+  </>);
+}
+
+const MAP: Record<PVariant, () => JSX.Element> = { lookbook: Lookbook, bundle: Bundle, configurator: Configurator, fashion: Fashion, discovery: Discovery, concierge: Concierge, editorial: Editorial, spotlight: Spotlight, boutique: Boutique, campaign: Campaign, dimensional: Dimensional, parallax: Parallax, cinematic: Cinematic, commerce: Commerce, magazine: Magazine };
 export function ProductHome({ variant }: { variant: PVariant }) { const V = MAP[variant]; return <V />; }
 // kept for tree-shaking friendliness of unused imports in some variants
 void useRef;
@@ -230,5 +244,5 @@ export const PRODUCT_LOOK: Record<PVariant, { offset: number; tone: number; seri
   fashion: { offset: 0, tone: 1, serif: false }, discovery: { offset: 1, tone: 2, serif: false }, concierge: { offset: 2, tone: 2, serif: true },
   editorial: { offset: 3, tone: 1, serif: true }, spotlight: { offset: 1, tone: 3, serif: false }, boutique: { offset: 2, tone: 4, serif: true },
   campaign: { offset: 3, tone: 5, serif: false }, dimensional: { offset: 1, tone: 4, serif: false }, parallax: { offset: 2, tone: 0, serif: true },
-  cinematic: { offset: 3, tone: 1, serif: true }, commerce: { offset: 0, tone: 4, serif: false },
+  cinematic: { offset: 3, tone: 1, serif: true }, commerce: { offset: 0, tone: 4, serif: false }, magazine: { offset: 2, tone: 3, serif: true },
 };
