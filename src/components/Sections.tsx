@@ -27,10 +27,25 @@ export function PricingPackages() {
               <button onClick={() => { setSel({ pkg: `${p.name} · ${p.price}` }); goForm(); }} className="btn btn-primary mt-7 w-full">Enquire about {p.name} <ArrowRight size={16} /></button>
             </article>))}
         </div>
-        <p className="mt-8 text-base font-semibold text-heading">10% upfront · 90% after delivery. Payment starts after your project is agreed.</p>
+        <p className="mt-8 text-base font-semibold text-heading">70% upfront · 30% after delivery. Payment starts after your project is agreed.</p>
         <p className="mt-2 max-w-4xl text-sm leading-6 text-paragraph">Shopify subscriptions, domain registration, paid themes, apps and third-party fees are separate. Delivery starts after we receive your brief and required assets. Custom service workflows are scoped with your project manager.</p>
       </div>
     </section>
+  );
+}
+
+function ReviewCard({ r }: { r: (typeof reviews)[number] }) {
+  const [en, setEn] = useState(false);
+  const initials = r.name.split(" ").map(w => w[0]).join("");
+  return (
+    <figure className="break-inside-avoid rounded-2xl border border-border bg-white p-6">
+      <figcaption className="flex items-center gap-3 border-b border-border pb-4">
+        <span aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#ff8a4c] to-[#f06927] text-base font-bold text-primary-foreground">{initials}</span>
+        <span><strong className="block text-base font-semibold text-heading">{r.name}</strong><span className="text-xs text-paragraph">{r.service} client</span></span>
+      </figcaption>
+      <blockquote lang={en ? "en" : "ur-Latn"} className="mt-4 text-base leading-[1.65] text-paragraph">{en ? r.en : r.text}</blockquote>
+      <button onClick={() => setEn(!en)} className="mt-3 text-xs font-semibold uppercase tracking-[.08em] text-primary underline underline-offset-4">{en ? "Roman Urdu mein parhein" : "Read in English"}</button>
+    </figure>
   );
 }
 
@@ -42,17 +57,11 @@ export function Testimonials() {
       <div className="mx-auto max-w-5xl text-center">
         <p className="eyebrow">Client experiences</p>
         <h2 id="reviews-title" className="h2 mt-3 !text-[2.75rem]">What our clients say.</h2>
-        <p className="mt-4 text-base text-paragraph">From first launches to store redesigns, hear about working with Zcorebit.</p>
-        <div className="mt-10 gap-5 text-left md:columns-2 [&>*]:mb-5">
-          {list.map(r => (
-            <figure key={r.name} className="break-inside-avoid rounded-2xl border border-border bg-white p-6">
-              <figcaption className="flex items-center gap-3 border-b border-border pb-4"><img src={asset(`assets/${r.img}`)} alt="" width={48} height={48} loading="lazy" className="h-12 w-12 shrink-0 rounded-full object-cover" /><span><strong className="block text-base font-semibold text-heading">{r.name}</strong><time className="text-xs text-paragraph">{r.date}</time></span></figcaption>
-              <blockquote className="mt-4 text-base leading-[1.65] text-paragraph">{r.text}</blockquote>
-            </figure>))}
-        </div>
+        <p className="mt-4 text-base text-paragraph">Hamare clients ka tajurba — Zcorebit ke saath kaam karne ke baare mein.</p>
+        <div className="mt-10 gap-5 text-left md:columns-2 [&>*]:mb-5">{list.map(r => <ReviewCard key={r.name} r={r} />)}</div>
         <p className="sr-only" aria-live="polite">Showing {list.length} of {reviews.length} reviews</p>
         <div className="mt-2 flex flex-wrap items-center justify-center gap-6">
-          <button onClick={() => setAll(!all)} aria-expanded={all} className="btn btn-outline">{all ? 'Show fewer reviews' : `Show all ${reviews.length} reviews`}<ChevronDown size={16} className={all ? 'rotate-180' : ''} /></button>
+          {reviews.length > 3 && <button onClick={() => setAll(!all)} aria-expanded={all} className="btn btn-outline">{all ? "Show fewer reviews" : `Show all ${reviews.length} reviews`}<ChevronDown size={16} className={all ? "rotate-180" : ""} /></button>}
           <a href="https://www.linkedin.com/company/zcorebit" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-heading underline underline-offset-4">Follow Zcorebit on LinkedIn <ArrowUpRight size={15} /></a>
         </div>
       </div>
@@ -70,7 +79,7 @@ export function VideoFeature() {
           <p className="mt-5 max-w-[620px] text-base leading-7 text-paragraph">Clear product details, useful choices and a straightforward path to checkout. See the sales-focused approach behind your custom Shopify store.</p>
           <a href="#pakistan-enquiry" onClick={e => { e.preventDefault(); goForm(); }} className="btn btn-primary mt-7">Plan my Shopify store <ArrowRight size={17} /></a>
         </div>
-        <video controls playsInline preload="none" poster={asset('assets/intro-poster.jpg')} width={1080} height={1350} className="mx-auto aspect-[4/5] w-full max-w-sm rounded-2xl bg-black object-contain" aria-label="Zevitech sales-focused Shopify store development"><source src={asset('assets/intro.mp4')} type="video/mp4" /></video>
+        <video controls playsInline preload="none" poster={asset('assets/intro-poster.jpg')} width={1080} height={1350} className="mx-auto aspect-[4/5] w-full max-w-sm rounded-2xl bg-black object-contain" aria-label="Zcorebit sales-focused Shopify store development"><source src={asset('assets/intro.mp4')} type="video/mp4" /></video>
       </div>
     </section>
   );

@@ -8,24 +8,18 @@ export const packages = [
 ];
 export const packageOptions = ['Help me choose', ...packages.map(p => `${p.name} · ${p.price}`)];
 
-const R = (name: string, date: string, img: string, text: string) => ({ name, date, img, text });
-export const reviews = [
-  R('Corey.', '2025-12-09', 'review-client-16.png', 'This company is amazing. They new I was haveing trouble with my previous developers , and they jumped in and got a broken down website up and going so I could sell my product, and while I was selling my product I gave them free reign to design me a new website from the ground up . Website is super nice . I can’t wait to see what the future has in store for HelixPep with zevitechs help and guidance . I recommend if you’re needing a website come check out zevitech.'),
-  R('Sarah T.', '2025-04-15', 'review-client-01.jpg', 'Just wanted to say thanks to the team for getting my Shopify store live on time. I had a deadline in mind, and they totally nailed it. Loved how they handled product pages and custom features.'),
-  R('Ahmed K.', '2025-03-28', 'review-client-02.jpg', 'This was my first time launching a Shopify store, and they made it so smooth. From design to checkout integration, everything looks and feels premium. Super happy!'),
-  R('Lina R.', '2025-02-19', 'review-client-03.jpg', 'I had an old Shopify store that wasn’t converting well. These guys revamped the entire layout and now my sales have literally doubled. Worth every penny.'),
-  R('Jason M.', '2025-01-09', 'review-client-04.jpg', 'Can’t recommend them enough for Shopify development. They took my messy ideas and turned them into a fully functioning, mobile-friendly store. Very responsive throughout the process.'),
-  R('Mehak F.', '2025-05-01', 'review-client-05.jpg', 'My last developer ghosted me halfway through my Shopify build. Found this agency online and they not only picked up the project but improved everything I had done so far. Legends.'),
-  R('Daniel S.', '2025-04-02', 'review-client-06.jpg', 'The level of customization they added to my Shopify store is insane. I asked for a very specific layout, and they built it exactly how I envisioned. Excellent work!'),
-  R('Hira N.', '2025-03-13', 'review-client-07.jpg', 'Absolutely love how my Shopify store turned out! The branding, the speed, the layout — everything is on point. I’ve already recommended them to 3 other friends.'),
-  R('Eric B.', '2025-02-07', 'review-client-08.jpg', 'They set up my entire Shopify dropshipping store from scratch, including product sourcing plugins. Saved me so much time and headache.'),
-  R('Zainab A.', '2025-01-21', 'review-client-09.jpg', 'We run a small clothing brand and wanted something simple but bold. They built a Shopify site that matches our aesthetic perfectly. Super fast loading and easy to manage.'),
-  R('Richard C.', '2025-05-10', 'review-client-10.jpg', 'Hired them for a Shopify redesign and they delivered beyond expectations. Cleaner UX, better mobile view, and they even gave some marketing tips. Great experience.'),
-  R('Tanya D.', '2025-04-20', 'review-client-11.jpg', 'Professional, quick, and super helpful. They handled the whole Shopify setup including payment gateways, shipping zones, and email automation. Will be working with them again soon.'),
-  R('Usman G.', '2025-03-01', 'review-client-12.jpg', 'I had no idea where to start with my Shopify store. These guys walked me through everything and delivered a ready-to-sell site. Honestly felt like a partner, not just a service provider.'),
-  R('Emily R.', '2025-02-10', 'review-client-13.jpg', 'Was skeptical at first, but damn, the Shopify site they built for me looks better than I imagined. They even helped me write the product descriptions. Total pros.'),
-  R('Moiz J.', '2025-01-30', 'review-client-14.jpg', 'One of the best experiences I’ve had working with any agency. They made my Shopify pet store go live within 10 days and handled every technical thing with ease.'),
-  R('Sofia L.', '2025-05-05', 'review-client-15.jpg', 'They didn’t just build a Shopify store — they built a brand presence. The logo, the layout, the storytelling across the site — all felt aligned. Super grateful.'),
+export type Review = { name: string; service: string; text: string; en: string };
+// Real client testimonials published on zcorebit.com/#testimonials, with a Roman Urdu translation of each.
+export const reviews: Review[] = [
+  { name: 'Ayesha Khan', service: 'SEO',
+    text: 'Zcorebit ke saath kaam karne se pehle hamari website Google par mushkil se nazar aati thi. Kuch mahine ke SEO kaam ke baad ab hamari ranking kaafi behtar hai aur visitors bhi barh gaye hain. Unhon ne waqt nikaal kar hamara business samjha aur aisi smart strategies istemal kin jin se waqai farq para.',
+    en: 'Before working with Zcorebit, our website barely showed up on Google. After a few months of their SEO work, we’re now ranking much higher and getting more visitors. They really took the time to understand our business and used smart strategies that actually made a difference.' },
+  { name: 'Ali Raza', service: 'Google Ads',
+    text: 'Google Ads se hamein achay nataij nahi mil rahe thay, phir hum ne Zcorebit ke saath kaam shuru kiya. Unki team ne hamari campaigns optimize kin aur budget barhaye baghair conversions barh gayin. Apne ad spend ka asal return dekh kar aakhirkar bohat acha lag raha hai!',
+    en: 'We had been struggling to get good results from Google Ads until we partnered with Zcorebit. Their team optimized our campaigns and helped us get more conversions without increasing the budget. It feels great to finally see real returns on our ad spend!' },
+  { name: 'Khurram Abbas', service: 'Google My Business',
+    text: 'Zcorebit ne hamari Google My Business listing theek aur optimize ki, aur ab zyada local customers hamein asani se dhoond lete hain. Calls aur visits yaqeenan barh gayi hain, aur unki support poore safar mein bohat madadgar rahi.',
+    en: 'Zcorebit helped us fix and optimize our Google My Business listing, and now more local customers are finding us easily. The calls and visits have definitely increased, and their support has been really helpful along the way.' },
 ];
 
 export const snapshots = [
@@ -42,7 +36,7 @@ export const faqs = [
   ['Can I sell with cash on delivery?', 'Yes. We can set up cash on delivery and your shipping rules. Courier apps or online payment providers depend on your account, their availability and your package scope. Their charges are separate.'],
   ['Will my store look exactly like a design preview?', 'The previews are references to help us understand your preferred direction. We customise your store around your branding, content and the features included in your agreed package.'],
   ['Can you build for a service business?', 'Yes. We can present your services, service areas and enquiry journey. Booking tools, subscriptions and specialist integrations are scoped with your project manager before work begins.'],
-  ['When do I pay, and how long will it take?', 'After we agree your project, 10% upfront starts the work and the remaining 90% is due after delivery. There is no payment on this enquiry form. Estimated delivery starts after we receive your brief, access and required assets; custom scope and feedback can affect timing.'],
+  ['When do I pay, and how long will it take?', 'After we agree your project, 70% upfront starts the work and the remaining 30% is due after delivery. There is no payment on this enquiry form. Estimated delivery starts after we receive your brief, access and required assets; custom scope and feedback can affect timing.'],
 ];
 
 export const journey = [
@@ -55,7 +49,7 @@ export const journey = [
 export const steps = [
   ['01', 'Tell us about your business', 'Share your contact details, what you sell and the package you’re considering. Not sure yet? We’ll help you choose.'],
   ['02', 'Agree your store plan', 'Your project manager confirms the design direction, features, delivery timeline and fixed project scope.'],
-  ['03', 'Build, review and launch', 'After agreement, start with 10% upfront. Review your custom store with us, with the balance due after delivery.'],
+  ['03', 'Build, review and launch', 'After agreement, start with 70% upfront. Review your custom store with us, with the remaining 30% due after delivery.'],
 ];
 
 export const heroPoints = [
